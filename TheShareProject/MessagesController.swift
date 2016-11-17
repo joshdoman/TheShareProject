@@ -119,8 +119,12 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     }
     
     func handleNewMessage() {
-        let newMessageController = NewMessageController()
-        let navController = UINavigationController(rootViewController: newMessageController)
+//        let newMessageController = NewMessageController()
+//        let navController = UINavigationController(rootViewController: newMessageController)
+//        present(navController, animated: true, completion: nil)
+//        
+        let profileController = ProfileViewController()
+        let navController = UINavigationController(rootViewController: profileController)
         present(navController, animated: true, completion: nil)
     }
     
@@ -190,7 +194,7 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         chargerPicker.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         chargerPicker.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -100).isActive = true
         chargerPicker.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -100).isActive = true
-        chargerPicker.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        chargerPicker.heightAnchor.constraint(equalToConstant: 80).isActive = true
         
         chargerPicker.delegate = self
         chargerPicker.dataSource = self
