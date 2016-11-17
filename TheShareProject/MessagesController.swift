@@ -119,12 +119,19 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     }
     
     func handleNewMessage() {
+        //go to NewMessageController
 //        let newMessageController = NewMessageController()
 //        let navController = UINavigationController(rootViewController: newMessageController)
 //        present(navController, animated: true, completion: nil)
 //        
-        let profileController = ProfileViewController()
-        let navController = UINavigationController(rootViewController: profileController)
+        //go to profileController
+//        let profileController = ProfileViewController()
+//        let navController = UINavigationController(rootViewController: profileController)
+//        present(navController, animated: true, completion: nil)
+//       
+        //go to acceptController
+        let acceptController = AcceptController()
+        let navController = UINavigationController(rootViewController: acceptController)
         present(navController, animated: true, completion: nil)
     }
     

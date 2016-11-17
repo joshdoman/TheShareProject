@@ -15,6 +15,8 @@ class ProfileViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
     
     @IBOutlet weak var profile: UIImageView!
     @IBOutlet weak var options: UIPickerView!
+    @IBOutlet weak var shareNum: UILabel!
+    @IBOutlet weak var borrowNum: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
