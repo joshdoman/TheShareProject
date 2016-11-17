@@ -1,3 +1,4 @@
+
 //
 //  ViewController.swift
 //  gameofchats
@@ -9,7 +10,9 @@
 import UIKit
 import Firebase
 
-class MessagesController: UIViewController {
+class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+    
+    var needCharger: String!
     
     lazy var getHelpButton: UIButton = {
         let button = UIButton(type: .system)
@@ -29,18 +32,55 @@ class MessagesController: UIViewController {
             if text == "" {
               print("Where are you?")
             } else {
-              print(text)
+              print("I need a " + needCharger + ". " + text)
             }
-        } else {
-            print("Say something!")
         }
     }
     
     let textMessage: UITextField = {
         let text = UITextField()
+        
+        //let rect = CGRect(x: 0, y: 0, width: 50, height: 50)
+        
+        //text.borderRect(forBounds: rect)
         text.translatesAutoresizingMaskIntoConstraints = false
-        text.placeholder = "Help! I'm in..."
+        text.placeholder = "Help! I'm in GSR G60!"
+        let myColor : UIColor = UIColor.gray
+        text.layer.borderColor = myColor.cgColor
+        text.layer.borderWidth = 1.0
         return text
+    }()
+    
+    let chargerLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "What do you need?"
+        return label
+    }()
+    
+    let locationLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Where are you?"
+        return label
+    }()
+    
+    let messageView: UITextView = {
+        let text = UITextView()
+        
+        text.translatesAutoresizingMaskIntoConstraints = false
+        
+        text.layer.borderWidth = 1.0;
+        text.layer.borderColor = UIColor.black.cgColor
+        //text.font = UIFont.init(name: "Roboto-Regular", size: 45)
+        
+        return text
+    }()
+    
+    let chargerPicker: UIPickerView = {
+        let picker = UIPickerView()
+        picker.translatesAutoresizingMaskIntoConstraints = false
+        return picker
     }()
     
     override func viewDidLoad() {
@@ -56,12 +96,21 @@ class MessagesController: UIViewController {
     func setupController() {
         
         view.backgroundColor = UIColor.white
+        needCharger = Products.options[0]
         
         view.addSubview(getHelpButton)
         view.addSubview(textMessage)
+        //view.addSubview(messageView)
+        view.addSubview(chargerPicker)
+        view.addSubview(locationLabel)
+        view.addSubview(chargerLabel)
         
         setupGetHelpButton()
         setupTextMessage()
+        //setupMessageView()
+        setupPickerView()
+        setupLocationLabel()
+        setupChargerLabel()
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogout))
         
@@ -116,10 +165,53 @@ class MessagesController: UIViewController {
         //need x, y, height constraints
         textMessage.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         textMessage.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 50).isActive = true
-        textMessage.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -100).isActive = true
+        textMessage.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -50).isActive = true
         textMessage.heightAnchor.constraint(equalToConstant: 50).isActive = true
     }
     
+    func setupMessageView() {
+        messageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        messageView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -250).isActive = true
+        messageView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -100).isActive = true
+        messageView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+    }
     
+    func setupLocationLabel() {
+        locationLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        locationLabel.bottomAnchor.constraint(equalTo: textMessage.topAnchor, constant: -12).isActive = true
+    }
+    
+    func setupChargerLabel() {
+        chargerLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        chargerLabel.bottomAnchor.constraint(equalTo: chargerPicker.topAnchor, constant: -12).isActive = true
+    }
+    
+    func setupPickerView() {
+        chargerPicker.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        chargerPicker.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -100).isActive = true
+        chargerPicker.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -100).isActive = true
+        chargerPicker.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        chargerPicker.delegate = self
+        chargerPicker.dataSource = self
+    }
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return Products.options.count
+    }
+    
+    //MARK: -  UIPickerView delegate
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return Products.options[row]
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        needCharger = Products.options[row]
+    }
 }
 

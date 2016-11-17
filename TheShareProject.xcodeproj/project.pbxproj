@@ -14,6 +14,7 @@
 		2114341C1DDC1A7C001A2495 /* MessagesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2114341B1DDC1A7C001A2495 /* MessagesController.swift */; };
 		2114341E1DDC1F63001A2495 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2114341D1DDC1F63001A2495 /* LoginController.swift */; };
 		211434201DDC1F8E001A2495 /* NewMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2114341F1DDC1F8E001A2495 /* NewMessageController.swift */; };
+		211434231DDE10CA001A2495 /* Products.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211434221DDE10CA001A2495 /* Products.swift */; };
 		2176B9C21DDAC63A0058394A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2176B9C11DDAC63A0058394A /* AppDelegate.swift */; };
 		2176B9C71DDAC63A0058394A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2176B9C51DDAC63A0058394A /* Main.storyboard */; };
 		2176B9C91DDAC63A0058394A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2176B9C81DDAC63A0058394A /* Assets.xcassets */; };
@@ -39,6 +40,7 @@
 		2114341D1DDC1F63001A2495 /* LoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		2114341F1DDC1F8E001A2495 /* NewMessageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMessageController.swift; sourceTree = "<group>"; };
 		211434211DDC2084001A2495 /* TheShareProject.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TheShareProject.entitlements; sourceTree = "<group>"; };
+		211434221DDE10CA001A2495 /* Products.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Products.swift; sourceTree = "<group>"; };
 		2176B9BE1DDAC63A0058394A /* TheShareProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheShareProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2176B9C11DDAC63A0058394A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2176B9C61DDAC63A0058394A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 			isa = PBXGroup;
 			children = (
 				211434191DDC1A33001A2495 /* User.swift */,
+				211434221DDE10CA001A2495 /* Products.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -371,6 +374,7 @@
 				2114341C1DDC1A7C001A2495 /* MessagesController.swift in Sources */,
 				211434201DDC1F8E001A2495 /* NewMessageController.swift in Sources */,
 				2176B9C21DDAC63A0058394A /* AppDelegate.swift in Sources */,
+				211434231DDE10CA001A2495 /* Products.swift in Sources */,
 				2114341A1DDC1A33001A2495 /* User.swift in Sources */,
 				2114341E1DDC1F63001A2495 /* LoginController.swift in Sources */,
 			);
