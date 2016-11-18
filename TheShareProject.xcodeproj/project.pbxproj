@@ -235,7 +235,7 @@
 				TargetAttributes = {
 					2176B9BD1DDAC63A0058394A = {
 						CreatedOnToolsVersion = 8.1;
-						DevelopmentTeam = C499GQVZEC;
+						DevelopmentTeam = N4963EZCDT;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Keychain = {
@@ -539,7 +539,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TheShareProject/TheShareProject.entitlements;
-				DEVELOPMENT_TEAM = C499GQVZEC;
+				DEVELOPMENT_TEAM = N4963EZCDT;
 				INFOPLIST_FILE = TheShareProject/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.shareproject.TheShareProject;
@@ -554,7 +554,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TheShareProject/TheShareProject.entitlements;
-				DEVELOPMENT_TEAM = C499GQVZEC;
+				DEVELOPMENT_TEAM = N4963EZCDT;
 				INFOPLIST_FILE = TheShareProject/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.shareproject.TheShareProject;
