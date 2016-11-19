@@ -107,6 +107,8 @@
 				211434251DDE2FA9001A2495 /* ProfileViewController.xib */,
 				211434281DDE3A93001A2495 /* AcceptController.swift */,
 				211434291DDE3A93001A2495 /* AcceptController.xib */,
+				2114342C1DDF487D001A2495 /* CongratsController.swift */,
+				2114342D1DDF487D001A2495 /* CongratsController.xib */,
 				06D8D19C1DDF45A200180EA1 /* RequestPendingViewController.swift */,
 				06D8D19D1DDF45A200180EA1 /* RequestPendingViewController.xib */,
 				06AD351F1DDF4C5C00C7FF64 /* ConfirmationViewController.swift */,
