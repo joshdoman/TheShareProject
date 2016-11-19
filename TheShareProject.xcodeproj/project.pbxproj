@@ -23,6 +23,8 @@
 		211434271DDE2FA9001A2495 /* ProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 211434251DDE2FA9001A2495 /* ProfileViewController.xib */; };
 		2114342A1DDE3A93001A2495 /* AcceptController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211434281DDE3A93001A2495 /* AcceptController.swift */; };
 		2114342B1DDE3A93001A2495 /* AcceptController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 211434291DDE3A93001A2495 /* AcceptController.xib */; };
+		2114342E1DDF487D001A2495 /* CongratsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2114342C1DDF487D001A2495 /* CongratsController.swift */; };
+		2114342F1DDF487D001A2495 /* CongratsController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2114342D1DDF487D001A2495 /* CongratsController.xib */; };
 		2176B9C21DDAC63A0058394A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2176B9C11DDAC63A0058394A /* AppDelegate.swift */; };
 		2176B9C71DDAC63A0058394A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2176B9C51DDAC63A0058394A /* Main.storyboard */; };
 		2176B9C91DDAC63A0058394A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2176B9C81DDAC63A0058394A /* Assets.xcassets */; };
@@ -57,6 +59,8 @@
 		211434251DDE2FA9001A2495 /* ProfileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileViewController.xib; sourceTree = "<group>"; };
 		211434281DDE3A93001A2495 /* AcceptController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcceptController.swift; sourceTree = "<group>"; };
 		211434291DDE3A93001A2495 /* AcceptController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AcceptController.xib; sourceTree = "<group>"; };
+		2114342C1DDF487D001A2495 /* CongratsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CongratsController.swift; sourceTree = "<group>"; };
+		2114342D1DDF487D001A2495 /* CongratsController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CongratsController.xib; sourceTree = "<group>"; };
 		2176B9BE1DDAC63A0058394A /* TheShareProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheShareProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2176B9C11DDAC63A0058394A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2176B9C61DDAC63A0058394A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -282,6 +286,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2176B9CC1DDAC63A0058394A /* LaunchScreen.storyboard in Resources */,
+				2114342F1DDF487D001A2495 /* CongratsController.xib in Resources */,
 				211434161DDC182F001A2495 /* GoogleService-Info.plist in Resources */,
 				2176B9C91DDAC63A0058394A /* Assets.xcassets in Resources */,
 				2114342B1DDE3A93001A2495 /* AcceptController.xib in Resources */,
@@ -399,6 +404,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2114342E1DDF487D001A2495 /* CongratsController.swift in Sources */,
 				2114341C1DDC1A7C001A2495 /* MessagesController.swift in Sources */,
 				211434201DDC1F8E001A2495 /* NewMessageController.swift in Sources */,
 				2176B9C21DDAC63A0058394A /* AppDelegate.swift in Sources */,
@@ -549,6 +555,7 @@
 				CODE_SIGN_ENTITLEMENTS = TheShareProject/TheShareProject.entitlements;
 				DEVELOPMENT_TEAM = N4963EZCDT;
 				INFOPLIST_FILE = TheShareProject/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.shareproject.TheShareProject;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -564,6 +571,7 @@
 				CODE_SIGN_ENTITLEMENTS = TheShareProject/TheShareProject.entitlements;
 				DEVELOPMENT_TEAM = N4963EZCDT;
 				INFOPLIST_FILE = TheShareProject/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.shareproject.TheShareProject;
 				PRODUCT_NAME = "$(TARGET_NAME)";

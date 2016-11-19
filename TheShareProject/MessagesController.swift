@@ -31,9 +31,84 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         if let text = textMessage.text {
             if text == "" {
               print("Where are you?")
+                
             } else {
               print("I need a " + needCharger + ". " + text)
+                let item = needCharger
+                let location = text
+                let username = "Josh"
+                
+                // Send POST request to /notify/all
+                
+                sendRequest(item: item!, location: location, username: username)
+                
+                
             }
+        }
+    }
+    
+    func sendRequest(item: String, location: String, username: String) {
+//        var request = URLRequest(url: URL(string: "http://localhost:3000/notify/all")!)
+//        request.httpMethod = "POST"
+//        let postString = "item=\(item)&username=\(username)&location=\(location)"
+//        request.httpBody = postString.data(using: .utf8)
+//        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+//            guard let data = data, error == nil else {                                                 // check for fundamental networking error
+//                print("error=\(error)")
+//                return
+//            }
+//            
+//            if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {           // check for http errors
+//                print("statusCode should be 200, but is \(httpStatus.statusCode)")
+//                print("response = \(response)")
+//            }
+//            
+//            let responseString = String(data: data, encoding: .utf8)
+//            print("responseString = \(responseString)")
+//        }
+//        task.resume()
+        
+       
+        
+        
+        
+        
+        
+        
+        
+        
+        let url = URL(string: "http://localhost:3000/notify/all")
+        
+//        let defaultSession = URLSession(configuration: URLSessionConfiguration.default)
+        
+        var request = NSMutableURLRequest(url: url!)
+        
+        request.httpMethod = "POST"
+        do {
+            let params = ["item":item, "location":location,"username":username]
+            
+            request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            
+            request.httpBody = try JSONSerialization.data(withJSONObject: params, options: JSONSerialization.WritingOptions.prettyPrinted)
+            
+            let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) in
+                //
+                if let error = error {
+                    print(error.localizedDescription)
+                    
+                    
+                } else if let httpResponse = response as? HTTPURLResponse {
+                    if httpResponse.statusCode == 200 {
+                        
+                    }
+                }
+
+            })
+            
+            task.resume()
+        
+        } catch {
+            
         }
     }
     
@@ -116,6 +191,20 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         
         let image = UIImage(named: "Create New-50")
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(handleNewMessage))
+        
+        //Looks for single or multiple taps.
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(LoginController.dismissKeyboard))
+        
+        //Uncomment the line below if you want the tap not not interfere and cancel other interactions.
+        //tap.cancelsTouchesInView = false
+        
+        view.addGestureRecognizer(tap)
+    }
+    
+    //Calls this function when the tap is recognized.
+    func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        view.endEditing(true)
     }
     
     func handleNewMessage() {
@@ -125,14 +214,14 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
 //        present(navController, animated: true, completion: nil)
 //        
         //go to profileController
-//        let profileController = ProfileViewController()
-//        let navController = UINavigationController(rootViewController: profileController)
-//        present(navController, animated: true, completion: nil)
-//       
-        //go to acceptController
-        let acceptController = AcceptController()
-        let navController = UINavigationController(rootViewController: acceptController)
+        let profileController = ProfileViewController()
+        let navController = UINavigationController(rootViewController: profileController)
         present(navController, animated: true, completion: nil)
+       
+//        //go to acceptController
+//        let acceptController = AcceptController()
+//        let navController = UINavigationController(rootViewController: acceptController)
+//        present(navController, animated: true, completion: nil)
     }
     
     func checkIfUserIsLoggedIn() {
