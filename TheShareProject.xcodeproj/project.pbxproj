@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		06AD35211DDF4C5C00C7FF64 /* ConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AD351F1DDF4C5C00C7FF64 /* ConfirmationViewController.swift */; };
+		06AD35221DDF4C5C00C7FF64 /* ConfirmationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 06AD35201DDF4C5C00C7FF64 /* ConfirmationViewController.xib */; };
 		06D8D19E1DDF45A200180EA1 /* RequestPendingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D8D19C1DDF45A200180EA1 /* RequestPendingViewController.swift */; };
 		06D8D19F1DDF45A200180EA1 /* RequestPendingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 06D8D19D1DDF45A200180EA1 /* RequestPendingViewController.xib */; };
 		0878FE7F3CF65A4B7FAEC931 /* Pods_TheShareProjectTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D8DA87B60F515277DEF138E /* Pods_TheShareProjectTests.framework */; };
@@ -39,6 +41,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		06AD351F1DDF4C5C00C7FF64 /* ConfirmationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfirmationViewController.swift; sourceTree = "<group>"; };
+		06AD35201DDF4C5C00C7FF64 /* ConfirmationViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ConfirmationViewController.xib; sourceTree = "<group>"; };
 		06D8D19C1DDF45A200180EA1 /* RequestPendingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestPendingViewController.swift; sourceTree = "<group>"; };
 		06D8D19D1DDF45A200180EA1 /* RequestPendingViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RequestPendingViewController.xib; sourceTree = "<group>"; };
 		0CAFE38752CEC88A925719E0 /* Pods-TheShareProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheShareProject.release.xcconfig"; path = "Pods/Target Support Files/Pods-TheShareProject/Pods-TheShareProject.release.xcconfig"; sourceTree = "<group>"; };
@@ -101,6 +105,8 @@
 				211434291DDE3A93001A2495 /* AcceptController.xib */,
 				06D8D19C1DDF45A200180EA1 /* RequestPendingViewController.swift */,
 				06D8D19D1DDF45A200180EA1 /* RequestPendingViewController.xib */,
+				06AD351F1DDF4C5C00C7FF64 /* ConfirmationViewController.swift */,
+				06AD35201DDF4C5C00C7FF64 /* ConfirmationViewController.xib */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -282,6 +288,7 @@
 				211434271DDE2FA9001A2495 /* ProfileViewController.xib in Resources */,
 				06D8D19F1DDF45A200180EA1 /* RequestPendingViewController.xib in Resources */,
 				2176B9C71DDAC63A0058394A /* Main.storyboard in Resources */,
+				06AD35221DDF4C5C00C7FF64 /* ConfirmationViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -396,6 +403,7 @@
 				211434201DDC1F8E001A2495 /* NewMessageController.swift in Sources */,
 				2176B9C21DDAC63A0058394A /* AppDelegate.swift in Sources */,
 				06D8D19E1DDF45A200180EA1 /* RequestPendingViewController.swift in Sources */,
+				06AD35211DDF4C5C00C7FF64 /* ConfirmationViewController.swift in Sources */,
 				211434231DDE10CA001A2495 /* Products.swift in Sources */,
 				211434261DDE2FA9001A2495 /* ProfileViewController.swift in Sources */,
 				2114342A1DDE3A93001A2495 /* AcceptController.swift in Sources */,
