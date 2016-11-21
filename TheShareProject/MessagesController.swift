@@ -22,7 +22,7 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         button.setTitleColor(UIColor.white, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         
-        button.addTarget(self, action: #selector(handleGetHelp), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handleGetHelp), for: .touchUpInside)//TODO-- change selector back to handleGetHelp
         
         return button
     }()
@@ -42,9 +42,16 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
                 
                 sendRequest(item: item!, location: location, username: username)
                 
-                // hi
+                
             }
         }
+    }
+    
+    func handleCheckRequests() {
+        //Send GET request to /info
+        
+        //TODO
+        getRequest()
     }
     
     func sendRequest(item: String, location: String, username: String) {
@@ -68,15 +75,6 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
 //        }
 //        task.resume()
         
-       
-        
-        
-        
-        
-        
-        
-        
-        
         let url = URL(string: "http://localhost:3000/notify/all")
         
 //        let defaultSession = URLSession(configuration: URLSessionConfiguration.default)
@@ -95,7 +93,7 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
                 //
                 if let error = error {
                     print(error.localizedDescription)
-                    
+            
                     
                 } else if let httpResponse = response as? HTTPURLResponse {
                     if httpResponse.statusCode == 200 {
@@ -109,6 +107,44 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         
         } catch {
             
+        }
+    }
+    
+    //This function sends a get request to the server, getting back a list of all users who are currently requesting a charger and a boolean indicating if there are any users requesting or not.
+    func getRequest() {
+        let url = URL(string: "http://localhost:3000/info")
+        
+        let request = NSMutableURLRequest(url: url!)
+        
+        request.httpMethod = "GET"
+        do {
+            //let params = ["item":item, "location":location,"username":username]
+            
+            request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            
+            //request.httpBody = try JSONSerialization.data(withJSONObject: params, options: JSONSerialization.WritingOptions.prettyPrinted)
+            
+            let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) in
+                //
+                if let error = error {
+                    print(error.localizedDescription)
+                } else if let httpResponse = response as? HTTPURLResponse {
+                    if httpResponse.statusCode == 200 {
+                    }
+                }
+//                let json = try! JSONSerialization.jsonObject(with: data!, options: []) as? NSDictionary
+////                print("Here is the server response data!\n")
+//                    print(json)
+                let resultNSString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!
+                if resultNSString != "" {
+                        print(resultNSString)
+                        self.handleNewMessage()
+                } else {
+                    //do nothing
+                    //TODO-- potential security vulnerability with checking for ""-- ask Yagil
+                }
+            })
+            task.resume()
         }
     }
     
