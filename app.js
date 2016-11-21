@@ -21,8 +21,12 @@ Firebase.initializeApp({
 });
 
 var db = Firebase.database();
-var ref = db.ref("numbers");
+//var ref = db.ref("numbers");
 var requests = db.ref("requests");
+var users = db.ref("users");
+var data = db.ref("data");
+
+var requesting = false;
 
 var numbers = [];
 
@@ -34,38 +38,61 @@ var numbers = [];
 //   console.log("The read failed: " + errorObject.code);
 // });
 
-ref.on("child_added", function(snapshot, prevChildKey) {
-  var num = snapshot.val();
-  numbers.push(num);
-  console.log(num);
+// ref.on("child_added", function(snapshot, prevChildKey) {
+//   var num = snapshot.val();
+//   numbers.push(num);
+//   console.log(num);
+// });
+
+users.on("child_added", function(snapshot, prevChildKey) {
+  console.log(snapshot.val());
+  console.log(snapshot.val().number);
+  numbers.push(snapshot.val().number);
 });
+
+function pushRequest(uid, username, location, item) {
+  requests.child(uid).set({
+    name: username,
+    location: location,
+    item: item
+  });
+  return;
+}
+
+//pushRequest("1232324324", "Alex2", "huntsman", "charger");
 
 //var pretendDB = {'numbers': ["4046928439","2818414898"]};
 
 app.post('/notify/all', function (req, res) {
   // get numbers from DB
-  //const myNumbers = pretendDB.numbers;  
+  //const myNumbers = pretendDB.numbers; 
+  //console.log("push"); 
   const myNumbers = numbers;
   // user requests the following
   const location = req.body.location;
   const item = req.body.item;
+  const uid = req.body.uid;
   const username = req.body.username;
+  const number = req.body.number;
+  //console.log(number);
   // var numbers = req.body.numbers.split(",");
   
-  requests.child(username).set({
-    location: location,
-    item: item
-  });
+  pushRequest(uid, username, location, item);
+  //pushRequest("Alex2", "huntsman", "charger");
 
   for( var i = 0; i < myNumbers.length; i++ ) {
-    client.sendMessage( { to:numbers[i], from:'12482136765', body:'Hey! ' + username + ' needs ' + item + ' at ' + location}, function( err, data ) {
+    if(myNumbers[i] != number) {
+      client.sendMessage( { to:myNumbers[i], from:'12482136765', body:'Hey! ' + username + ' needs ' + item + ' at ' + location}, function( err, data ) {
       if (err) {
         console.log("Error! " + err.message);
       } else {
         console.log( data.body );
       }
       
-    });
+      });
+    } else {
+      console.log("sending message to requester");
+    }
   }
   
   var resp = new twilio.TwimlResponse();
@@ -89,9 +116,22 @@ app.post('/notify/all', function (req, res) {
 //   // console.log('test');
 // });
 
+requests.on("child_added", function(snapshot, prevChildKey) {
+  console.log(snapshot.val().name);
+  requesting = true;
+});
+
+requests.on("child_removed", function(snapshot) {
+  requesting = false;
+});
+
+
 app.get('/info', function (req, res) {
-  const resp = "Josh";
-  console.log("Testing to see if we can get anything back from the server!");
+  var resp = ""
+  if (requesting) {
+    resp = "requesting"
+  }
+  //console.log("Testing to see if we can get anything back from the server!");
   res.writeHead(200, {
     'Content-Type':'text/xml'
   });
