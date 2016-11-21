@@ -11,5 +11,6 @@ import Foundation
 class AppManager: NSObject {
 
     static var handlingRequest: Bool?
+    static var requesting: Bool?
     
 }

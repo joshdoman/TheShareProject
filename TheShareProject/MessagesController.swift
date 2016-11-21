@@ -19,7 +19,7 @@ import Foundation
 class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     
     var needCharger: String!
-    var requesting: Bool?
+    var requested: Bool?
     var myTimer: Timer!
     
     lazy var getHelpButton: UIButton = {
@@ -41,15 +41,19 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
               print("Where are you?")
             } else {
               print("I need a " + needCharger + ". " + text)
-                let item = needCharger
+                let item = needCharger!
                 let location = text
                 let username = ThisUser.name!
+                let uid = ThisUser.uid!
+                let number = ThisUser.number!
                 
                 // Send POST request to /notify/all
                 
-                sendRequest(item: item!, location: location, username: username)
+                sendRequest(item: item, location: location, username: username, uid: uid, number: number)
                 
+                handleSegue(type: "request")
                 
+                AppManager.requesting = true;
             }
         }
     }
@@ -61,7 +65,7 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         getRequest()
     }
     
-    func sendRequest(item: String, location: String, username: String) {
+    func sendRequest(item: String, location: String, username: String, uid: String, number: String) {
 //        var request = URLRequest(url: URL(string: "http://localhost:3000/notify/all")!)
 //        request.httpMethod = "POST"
 //        let postString = "item=\(item)&username=\(username)&location=\(location)"
@@ -90,7 +94,7 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         
         request.httpMethod = "POST"
         do {
-            let params = ["item":item, "location":location,"username":username]
+            let params = ["item":item, "location":location,"username":username,"uid":uid,"number":number]
             
             request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             
@@ -145,7 +149,7 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
                 let resultNSString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!
                 if resultNSString != "" {
                         print(resultNSString)
-                        self.requesting = true;
+                        self.requested = true;
                 } else {
                     //do nothing
                     //TODO-- potential security vulnerability with checking for ""-- ask Yagil
@@ -207,7 +211,8 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         
         checkIfUserIsLoggedIn()
         
-        requesting = false;
+        requested = false;
+        AppManager.requesting = false;
         AppManager.handlingRequest = false;
         needCharger = Products.options[0]
         
@@ -216,17 +221,16 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         handleCheckRequests()
         
         setupController()
-        
     }
     
     func handleGet()
     {
-        if AppManager.handlingRequest! == false {
+        if AppManager.handlingRequest! == false && AppManager.requesting! == false {
             handleCheckRequests()
-            if requesting! == true {
+            if requested! == true {
                 AppManager.handlingRequest = true
-                requesting = false
-                handleNewMessage() //go to new viewcontroller
+                requested = false
+                handleSegue(type: "accept") //go to new viewcontroller
             }
         }
     }
@@ -253,7 +257,7 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogout))
         
         let image = UIImage(named: "Create New-50")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(handleNewMessage))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(handleProfile))
         
         //Looks for single or multiple taps.
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(LoginController.dismissKeyboard))
@@ -264,27 +268,36 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         view.addGestureRecognizer(tap)
     }
     
+    func handleProfile() {
+        handleSegue(type: "profile")
+    }
+    
     //Calls this function when the tap is recognized.
     func dismissKeyboard() {
         //Causes the view (or one of its embedded text fields) to resign the first responder status.
         view.endEditing(true)
     }
     
-    func handleNewMessage() {
-        //go to NewMessageController
-//        let newMessageController = NewMessageController()
-//        let navController = UINavigationController(rootViewController: newMessageController)
-//        present(navController, animated: true, completion: nil)
-//        
-        //go to profileController
+    func handleSegue(type: String) {
+        if type == "profile" {
+            
         let profileController = ProfileViewController()
         let navController = UINavigationController(rootViewController: profileController)
         present(navController, animated: true, completion: nil)
-       
-//        //go to acceptController
-//        let acceptController = AcceptController()
-//        let navController = UINavigationController(rootViewController: acceptController)
-//        present(navController, animated: true, completion: nil)
+            
+        } else if type == "accept" {
+            
+            let acceptController = AcceptController()
+            let navController = UINavigationController(rootViewController: acceptController)
+            present(navController, animated: true, completion: nil)
+            
+        } else if type == "request" {
+            
+            let requestController = RequestPendingViewController()
+            let navController = UINavigationController(rootViewController: requestController)
+            present(navController, animated: true, completion: nil)
+            
+        }
     }
     
     func handleLogout() {
@@ -344,6 +357,9 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
                         ThisUser.name = dictionary["name"] as? String
                         ThisUser.email = dictionary["email"] as? String
                         ThisUser.number = dictionary["number"] as? String
+                        ThisUser.uid = uid
+                        //print(dictionary["name"])
+                        print("success")
                     }
                 })
             }

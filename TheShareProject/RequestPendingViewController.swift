@@ -15,6 +15,8 @@ class RequestPendingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setupController()
+        
         setupLabels()
         // Do any additional setup after loading the view.
     }
@@ -22,5 +24,14 @@ class RequestPendingViewController: UIViewController {
     func setupLabels() {
         //TODO-- maybe don't need
         
+    }
+    
+    func setupController() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(handleBack))
+    }
+    
+    func handleBack() {
+        dismiss(animated: true, completion: nil)
+        AppManager.requesting = true;
     }
 }

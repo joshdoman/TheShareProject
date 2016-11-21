@@ -15,5 +15,6 @@ class ThisUser {
     static var email: String?
     static var number: String?
     static var name: String?
+    static var uid: String?
     
 }
