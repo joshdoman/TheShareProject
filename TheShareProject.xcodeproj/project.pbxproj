@@ -14,10 +14,8 @@
 		0878FE7F3CF65A4B7FAEC931 /* Pods_TheShareProjectTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D8DA87B60F515277DEF138E /* Pods_TheShareProjectTests.framework */; };
 		0DE8B2F56484C32B01E268BC /* Pods_TheShareProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FB9BC882A917156B82D1DB8 /* Pods_TheShareProject.framework */; };
 		211434161DDC182F001A2495 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 211434151DDC182F001A2495 /* GoogleService-Info.plist */; };
-		2114341A1DDC1A33001A2495 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211434191DDC1A33001A2495 /* User.swift */; };
 		2114341C1DDC1A7C001A2495 /* MessagesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2114341B1DDC1A7C001A2495 /* MessagesController.swift */; };
 		2114341E1DDC1F63001A2495 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2114341D1DDC1F63001A2495 /* LoginController.swift */; };
-		211434201DDC1F8E001A2495 /* NewMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2114341F1DDC1F8E001A2495 /* NewMessageController.swift */; };
 		211434231DDE10CA001A2495 /* Products.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211434221DDE10CA001A2495 /* Products.swift */; };
 		211434261DDE2FA9001A2495 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211434241DDE2FA9001A2495 /* ProfileViewController.swift */; };
 		211434271DDE2FA9001A2495 /* ProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 211434251DDE2FA9001A2495 /* ProfileViewController.xib */; };
@@ -30,6 +28,9 @@
 		2176B9C91DDAC63A0058394A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2176B9C81DDAC63A0058394A /* Assets.xcassets */; };
 		2176B9CC1DDAC63A0058394A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2176B9CA1DDAC63A0058394A /* LaunchScreen.storyboard */; };
 		2176B9D71DDAC63A0058394A /* TheShareProjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2176B9D61DDAC63A0058394A /* TheShareProjectTests.swift */; };
+		218010971DE2AD3A00AE9EDB /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218010961DE2AD3A00AE9EDB /* AppManager.swift */; };
+		2180109B1DE2AE7800AE9EDB /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2180109A1DE2AE7800AE9EDB /* User.swift */; };
+		2180109D1DE2AE8800AE9EDB /* ThisUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2180109C1DE2AE8800AE9EDB /* ThisUser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,10 +50,8 @@
 		06D8D19D1DDF45A200180EA1 /* RequestPendingViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RequestPendingViewController.xib; sourceTree = "<group>"; };
 		0CAFE38752CEC88A925719E0 /* Pods-TheShareProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheShareProject.release.xcconfig"; path = "Pods/Target Support Files/Pods-TheShareProject/Pods-TheShareProject.release.xcconfig"; sourceTree = "<group>"; };
 		211434151DDC182F001A2495 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		211434191DDC1A33001A2495 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		2114341B1DDC1A7C001A2495 /* MessagesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesController.swift; sourceTree = "<group>"; };
 		2114341D1DDC1F63001A2495 /* LoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
-		2114341F1DDC1F8E001A2495 /* NewMessageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMessageController.swift; sourceTree = "<group>"; };
 		211434211DDC2084001A2495 /* TheShareProject.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TheShareProject.entitlements; sourceTree = "<group>"; };
 		211434221DDE10CA001A2495 /* Products.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Products.swift; sourceTree = "<group>"; };
 		211434241DDE2FA9001A2495 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
@@ -70,6 +69,9 @@
 		2176B9D21DDAC63A0058394A /* TheShareProjectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TheShareProjectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2176B9D61DDAC63A0058394A /* TheShareProjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheShareProjectTests.swift; sourceTree = "<group>"; };
 		2176B9D81DDAC63A0058394A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		218010961DE2AD3A00AE9EDB /* AppManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
+		2180109A1DE2AE7800AE9EDB /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		2180109C1DE2AE8800AE9EDB /* ThisUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThisUser.swift; sourceTree = "<group>"; };
 		2FB9BC882A917156B82D1DB8 /* Pods_TheShareProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TheShareProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F9CBE1867C2494FFA8701FF /* Pods-TheShareProjectTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheShareProjectTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TheShareProjectTests/Pods-TheShareProjectTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7D8DA87B60F515277DEF138E /* Pods_TheShareProjectTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TheShareProjectTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -102,7 +104,6 @@
 			children = (
 				2114341B1DDC1A7C001A2495 /* MessagesController.swift */,
 				2114341D1DDC1F63001A2495 /* LoginController.swift */,
-				2114341F1DDC1F8E001A2495 /* NewMessageController.swift */,
 				211434241DDE2FA9001A2495 /* ProfileViewController.swift */,
 				211434251DDE2FA9001A2495 /* ProfileViewController.xib */,
 				211434281DDE3A93001A2495 /* AcceptController.swift */,
@@ -120,8 +121,10 @@
 		211434181DDC1A28001A2495 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				211434191DDC1A33001A2495 /* User.swift */,
 				211434221DDE10CA001A2495 /* Products.swift */,
+				218010961DE2AD3A00AE9EDB /* AppManager.swift */,
+				2180109A1DE2AE7800AE9EDB /* User.swift */,
+				2180109C1DE2AE8800AE9EDB /* ThisUser.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -247,7 +250,7 @@
 				TargetAttributes = {
 					2176B9BD1DDAC63A0058394A = {
 						CreatedOnToolsVersion = 8.1;
-						DevelopmentTeam = N4963EZCDT;
+						DevelopmentTeam = GZC25U6WG3;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Keychain = {
@@ -407,16 +410,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				2114342E1DDF487D001A2495 /* CongratsController.swift in Sources */,
+				2180109D1DE2AE8800AE9EDB /* ThisUser.swift in Sources */,
 				2114341C1DDC1A7C001A2495 /* MessagesController.swift in Sources */,
-				211434201DDC1F8E001A2495 /* NewMessageController.swift in Sources */,
 				2176B9C21DDAC63A0058394A /* AppDelegate.swift in Sources */,
 				06D8D19E1DDF45A200180EA1 /* RequestPendingViewController.swift in Sources */,
 				06AD35211DDF4C5C00C7FF64 /* ConfirmationViewController.swift in Sources */,
 				211434231DDE10CA001A2495 /* Products.swift in Sources */,
 				211434261DDE2FA9001A2495 /* ProfileViewController.swift in Sources */,
+				218010971DE2AD3A00AE9EDB /* AppManager.swift in Sources */,
 				2114342A1DDE3A93001A2495 /* AcceptController.swift in Sources */,
-				2114341A1DDC1A33001A2495 /* User.swift in Sources */,
 				2114341E1DDC1F63001A2495 /* LoginController.swift in Sources */,
+				2180109B1DE2AE7800AE9EDB /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -555,7 +559,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TheShareProject/TheShareProject.entitlements;
-				DEVELOPMENT_TEAM = N4963EZCDT;
+				DEVELOPMENT_TEAM = GZC25U6WG3;
 				INFOPLIST_FILE = TheShareProject/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -571,7 +575,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TheShareProject/TheShareProject.entitlements;
-				DEVELOPMENT_TEAM = N4963EZCDT;
+				DEVELOPMENT_TEAM = GZC25U6WG3;
 				INFOPLIST_FILE = TheShareProject/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

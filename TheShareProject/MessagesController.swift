@@ -10,9 +10,17 @@
 import UIKit
 import Firebase
 
+import CoreFoundation
+import CoreGraphics
+import Darwin
+import Darwin.uuid
+import Foundation
+
 class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     
     var needCharger: String!
+    var requesting: Bool?
+    var myTimer: Timer!
     
     lazy var getHelpButton: UIButton = {
         let button = UIButton(type: .system)
@@ -31,12 +39,11 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         if let text = textMessage.text {
             if text == "" {
               print("Where are you?")
-                
             } else {
               print("I need a " + needCharger + ". " + text)
                 let item = needCharger
                 let location = text
-                let username = "Josh"
+                let username = ThisUser.name!
                 
                 // Send POST request to /notify/all
                 
@@ -138,7 +145,7 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
                 let resultNSString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!
                 if resultNSString != "" {
                         print(resultNSString)
-                        self.handleNewMessage()
+                        self.requesting = true;
                 } else {
                     //do nothing
                     //TODO-- potential security vulnerability with checking for ""-- ask Yagil
@@ -198,10 +205,30 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        setupController()
-        
         checkIfUserIsLoggedIn()
         
+        requesting = false;
+        AppManager.handlingRequest = false;
+        needCharger = Products.options[0]
+        
+        myTimer = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(handleGet), userInfo: nil, repeats: true)
+        
+        handleCheckRequests()
+        
+        setupController()
+        
+    }
+    
+    func handleGet()
+    {
+        if AppManager.handlingRequest! == false {
+            handleCheckRequests()
+            if requesting! == true {
+                AppManager.handlingRequest = true
+                requesting = false
+                handleNewMessage() //go to new viewcontroller
+            }
+        }
     }
     
     func setupController() {
@@ -260,23 +287,6 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
 //        present(navController, animated: true, completion: nil)
     }
     
-    func checkIfUserIsLoggedIn() {
-        // user is not loggen in
-        if FIRAuth.auth()?.currentUser?.uid == nil {
-            perform(#selector(handleLogout), with: nil, afterDelay: 0)
-        } else {
-            let uid = FIRAuth.auth()?.currentUser?.uid
-            FIRDatabase.database().reference().child("users").child(uid!).observeSingleEvent(of: .value, with: { (snapshot) in
-                
-                print(snapshot)
-                                if let dictionary = snapshot.value as? [String: AnyObject] {
-                                    self.navigationItem.title = dictionary["name"] as? String
-                                }
-                
-            }, withCancel: nil)
-        }
-    }
-    
     func handleLogout() {
         
         do {
@@ -288,6 +298,59 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         let loginController = LoginController()
         present(loginController, animated: true, completion: nil)
     }
+    
+    func checkIfUserIsLoggedIn() {
+        // user is not loggen in
+        if FIRAuth.auth()?.currentUser?.uid == nil {
+            perform(#selector(handleLogout), with: nil, afterDelay: 0)
+        } else {
+//            let uid = FIRAuth.auth()?.currentUser?.uid
+//            let ref = FIRDatabase.database().reference().child("users").child(uid!)
+//            ref.observeSingleEvent(of: .value, with: { (snapshot) in
+//                
+//                print(snapshot)
+////                                if let dictionary = snapshot.value as? [String: AnyObject] {
+////                                    self.navigationItem.title = dictionary["name"] as? String
+////                                    User.name = dictionary["name"] as? String
+////                                    User.email = dictionary["email"] as? String
+////                                    User.number = dictionary["number"] as? String
+////                                }
+//                ref.child(byAppendingPath: "name").observeSingleEvent(of: .value, with: { snapshot in
+//                    
+//                    print(snapshot.value ?? "myName")
+//                    //self.navigationItem.title = snapshot.value ?? "testName" as? String
+//                    
+//                })
+//                                //self.navigationItem.title = ref.child("name") as? String
+//                
+//            }, withCancel: nil)
+            FIRAuth.auth()!.addStateDidChangeListener { auth, user in
+                guard let user = user else { return }
+                ThisUser.user = User(authData: user)
+                //print(ThisUser.user!.email)
+                let uid = ThisUser.user!.uid
+                let ref = FIRDatabase.database().reference().child("users").child(uid)
+                //let ref = FIRDatabase.database().reference().child("users").child(uid).child("name")
+//                ref.observeSingleEvent(of: .value, with: { (snapshot) in
+//                    //print(snapshot.value ?? "testName")
+//                    if let name = snapshot.value {
+//                        ThisUser.name = name as? String
+//                    }
+//                    print(ThisUser.name!)
+//                })
+                ref.observeSingleEvent(of: .value, with: { (snapshot) in
+                    if let dictionary = snapshot.value as? [String: AnyObject] {
+                        self.navigationItem.title = dictionary["name"] as? String
+                        ThisUser.name = dictionary["name"] as? String
+                        ThisUser.email = dictionary["email"] as? String
+                        ThisUser.number = dictionary["number"] as? String
+                    }
+                })
+            }
+        }
+    }
+    
+    
     
     func setupGetHelpButton() {
         //need x, y, height constraints

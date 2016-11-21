@@ -1,5 +1,5 @@
 //
-//  User.swift
+//  File.swift
 //  TheShareProject
 //
 //  Created by Josh Doman on 11/20/16.
@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Firebase
 
 struct User {
     

@@ -35,6 +35,7 @@ class ProfileViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
     
     func handleBack() {
         dismiss(animated: true, completion: nil)
+        AppManager.handlingRequest = false;
     }
     
     func setupProfileImage() {
