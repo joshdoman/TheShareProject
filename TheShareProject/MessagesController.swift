@@ -19,7 +19,7 @@ import Foundation
 class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     
     var needCharger: String!
-    var requested: Bool?
+    static var requested: Bool?
     var myTimer: Timer!
     
     lazy var getHelpButton: UIButton = {
@@ -35,129 +35,7 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         return button
     }()
     
-    func handleGetHelp() {
-        if let text = textMessage.text {
-            if text == "" {
-              print("Where are you?")
-            } else {
-              print("I need a " + needCharger + ". " + text)
-                let item = needCharger!
-                let location = text
-                let username = ThisUser.name!
-                let uid = ThisUser.uid!
-                let number = ThisUser.number!
-                
-                // Send POST request to /notify/all
-                
-                sendRequest(item: item, location: location, username: username, uid: uid, number: number)
-                
-                handleSegue(type: "request")
-                
-                AppManager.requesting = true;
-            }
-        }
-    }
-    
-    func handleCheckRequests() {
-        //Send GET request to /info
-        
-        //TODO
-        getRequest()
-    }
-    
-    func sendRequest(item: String, location: String, username: String, uid: String, number: String) {
-//        var request = URLRequest(url: URL(string: "http://localhost:3000/notify/all")!)
-//        request.httpMethod = "POST"
-//        let postString = "item=\(item)&username=\(username)&location=\(location)"
-//        request.httpBody = postString.data(using: .utf8)
-//        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-//            guard let data = data, error == nil else {                                                 // check for fundamental networking error
-//                print("error=\(error)")
-//                return
-//            }
-//            
-//            if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {           // check for http errors
-//                print("statusCode should be 200, but is \(httpStatus.statusCode)")
-//                print("response = \(response)")
-//            }
-//            
-//            let responseString = String(data: data, encoding: .utf8)
-//            print("responseString = \(responseString)")
-//        }
-//        task.resume()
-        
-        let url = URL(string: "http://localhost:3000/notify/all")
-        
-//        let defaultSession = URLSession(configuration: URLSessionConfiguration.default)
-        
-        var request = NSMutableURLRequest(url: url!)
-        
-        request.httpMethod = "POST"
-        do {
-            let params = ["item":item, "location":location,"username":username,"uid":uid,"number":number]
-            
-            request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-            
-            request.httpBody = try JSONSerialization.data(withJSONObject: params, options: JSONSerialization.WritingOptions.prettyPrinted)
-            
-            let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) in
-                //
-                if let error = error {
-                    print(error.localizedDescription)
-            
-                    
-                } else if let httpResponse = response as? HTTPURLResponse {
-                    if httpResponse.statusCode == 200 {
-                        
-                    }
-                }
 
-            })
-            
-            task.resume()
-        
-        } catch {
-            
-        }
-    }
-    
-    //This function sends a get request to the server, getting back a list of all users who are currently requesting a charger and a boolean indicating if there are any users requesting or not.
-    func getRequest() {
-        let url = URL(string: "http://localhost:3000/info")
-        
-        let request = NSMutableURLRequest(url: url!)
-        
-        request.httpMethod = "GET"
-        do {
-            //let params = ["item":item, "location":location,"username":username]
-            
-            request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-            
-            //request.httpBody = try JSONSerialization.data(withJSONObject: params, options: JSONSerialization.WritingOptions.prettyPrinted)
-            
-            let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) in
-                //
-                if let error = error {
-                    print(error.localizedDescription)
-                } else if let httpResponse = response as? HTTPURLResponse {
-                    if httpResponse.statusCode == 200 {
-                    }
-                }
-//                let json = try! JSONSerialization.jsonObject(with: data!, options: []) as? NSDictionary
-////                print("Here is the server response data!\n")
-//                    print(json)
-                let resultNSString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!
-                if resultNSString != "" {
-                        print(resultNSString)
-                        self.requested = true;
-                } else {
-                    //do nothing
-                    //TODO-- potential security vulnerability with checking for ""-- ask Yagil
-                }
-            })
-            task.resume()
-        }
-    }
     
     let textMessage: UITextField = {
         let text = UITextField()
@@ -209,9 +87,11 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        NetworkManager.getOutstandingRequest()
+        
         checkIfUserIsLoggedIn()
         
-        requested = false;
+        MessagesController.requested = false;
         AppManager.requesting = false;
         AppManager.handlingRequest = false;
         needCharger = Products.options[0]
@@ -221,18 +101,6 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         handleCheckRequests()
         
         setupController()
-    }
-    
-    func handleGet()
-    {
-        if AppManager.handlingRequest! == false && AppManager.requesting! == false {
-            handleCheckRequests()
-            if requested! == true {
-                AppManager.handlingRequest = true
-                requested = false
-                handleSegue(type: "accept") //go to new viewcontroller
-            }
-        }
     }
     
     func setupController() {
@@ -268,48 +136,10 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         view.addGestureRecognizer(tap)
     }
     
-    func handleProfile() {
-        handleSegue(type: "profile")
-    }
-    
     //Calls this function when the tap is recognized.
     func dismissKeyboard() {
         //Causes the view (or one of its embedded text fields) to resign the first responder status.
         view.endEditing(true)
-    }
-    
-    func handleSegue(type: String) {
-        if type == "profile" {
-            
-        let profileController = ProfileViewController()
-        let navController = UINavigationController(rootViewController: profileController)
-        present(navController, animated: true, completion: nil)
-            
-        } else if type == "accept" {
-            
-            let acceptController = AcceptController()
-            let navController = UINavigationController(rootViewController: acceptController)
-            present(navController, animated: true, completion: nil)
-            
-        } else if type == "request" {
-            
-            let requestController = RequestPendingViewController()
-            let navController = UINavigationController(rootViewController: requestController)
-            present(navController, animated: true, completion: nil)
-            
-        }
-    }
-    
-    func handleLogout() {
-        
-        do {
-            try FIRAuth.auth()?.signOut()
-        } catch let logoutError {
-            print(logoutError)
-        }
-        
-        let loginController = LoginController()
-        present(loginController, animated: true, completion: nil)
     }
     
     func checkIfUserIsLoggedIn() {
@@ -428,5 +258,24 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         needCharger = Products.options[row]
     }
+    
+//    func fetchUserAndSetupNavBarTitle() {
+//        guard let uid = FIRAuth.auth()?.currentUser?.uid else {
+//            return
+//        }
+//        
+//        FIRDatabase.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+//            if let dictionary = snapshot.value as? [String: AnyObject] {
+//                let user = User()
+//                user.setValuesForKeys(dictionary)
+//                self.setupNavBarWithUser(user: user)
+//            }
+//            
+//        }, withCancel: nil)
+//    }
+//    
+//    func setupNavBarWithUser(user: User) {
+//        self.navigationItem.title = user.name
+//    }
 }
 

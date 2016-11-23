@@ -36,6 +36,7 @@ class AcceptController: UIViewController {
     
     @IBAction func deny(_ sender: Any) {
         dismiss(animated: true, completion: nil)
+        //AppManager.handlingRequest = false    //makes pop back up
     }
 
     
