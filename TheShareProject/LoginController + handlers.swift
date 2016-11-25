@@ -11,27 +11,36 @@ import Firebase
 
 extension LoginController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
+    func handleLoginRegister() {
+        if loginRegisterSegmentedControl.selectedSegmentIndex == 0{
+            handleLogin()
+        } else {
+            handleRegister()
+        }
+    }
+    
     func handleLogin() {
         guard let email = emailTextField.text, let password = passwordTextField.text else {
             print("Form is not valid")
             return
         }
         
-        //        FIRAuth.auth()?.signIn(withEmail: email, password: password, completion: {
-        //            (user, error) in
-        //
-        //            if error != nil {
-        //                //print("HEELLLOOO")
-        //                print(error!)
-        //                return
-        //            }
-        //
-        //            //successfully logged in our user
-        //            self.dismiss(animated: true, completion: nil)
-        //
-        //        })
+        FIRAuth.auth()?.signIn(withEmail: email, password: password, completion: {
+            (user, error) in
         
-        FIRAuth.auth()?.signIn(withEmail: email, password: password)
+            if error != nil {
+                //print("HEELLLOOO")
+                print(error!)
+                return
+            }
+        
+            self.messagesController?.fetchUserAndSetupNavBarTitle()
+            
+            //successfully logged in our user
+            self.dismiss(animated: true, completion: nil)
+            
+        
+        })
     }
     
     func handleRegister() {
@@ -51,41 +60,32 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
                 return
             }
             
-            //successfully authenticated user
-            let ref = FIRDatabase.database().reference(fromURL: "https://theshareproject-ba012.firebaseio.com/")
-            
-            let usersReference = ref.child("users").child(uid) //make users reference
-            
             let values = ["name": name, "email": email, "number": number]
-            
-            //            User.name = name
-            //            User.email = email
-            //            User.number = number
-            
-            //            usersReference.updateChildValues(values, withCompletionBlock: { (err, ref)
-            //                in
-            //
-            //                if err != nil {
-            //                    print(err!)
-            //                    return
-            //                }
-            //
-            //                self.dismiss(animated: true, completion: nil)
-            //                
-            //                //print("Saved user successfully")
-            //            })
-            
-            usersReference.updateChildValues(values)
+            self.registerUserInfoDatabaseWithUID(uid: uid, values: values as [String : AnyObject])
             
         })
     }
     
-    func handleLoginRegister() {
-        if loginRegisterSegmentedControl.selectedSegmentIndex == 0{
-            handleLogin()
-        } else {
-            handleRegister()
-        }
+    private func registerUserInfoDatabaseWithUID(uid: String, values: [String: AnyObject]) {
+        let ref = FIRDatabase.database().reference()
+        
+        let usersReference = ref.child("users").child(uid) //make users reference
+        
+        usersReference.updateChildValues(values, withCompletionBlock: { (err, ref)
+            in
+            
+            if err != nil {
+                print(err!)
+                return
+            }
+
+            let user = User()
+            user.setValuesForKeys(values)
+            self.messagesController?.setupNavBarWithUser(user: user)
+            
+            self.dismiss(animated: true, completion: nil)
+            
+        })
     }
     
     func handleLoginRegisterChange() {

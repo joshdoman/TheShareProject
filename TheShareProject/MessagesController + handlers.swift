@@ -16,20 +16,22 @@ extension MessagesController {
             if text == "" {
                 print("Where are you?")
             } else {
-                print("I need a " + needCharger + ". " + text)
-                let item = needCharger!
-                let location = text
-                let username = ThisUser.name!
-                let uid = ThisUser.uid!
-                let number = ThisUser.number!
                 
-                // Send POST request to /notify/all
-                
-                NetworkManager.sendChargerRequest(item: item, location: location, username: username, uid: uid, number: number)
-                
-                handleSegue(type: "request")
-                
-                AppManager.requesting = true;
+                if let user = AppManager.currentUser {
+                    if let username = user.name, let uid = user.uid, let number = user.number {
+                        print("I need a " + needCharger + ". " + text)
+                        let item = needCharger!
+                        let location = text
+                        
+                        // Send POST request to /notify/all
+                        
+                        NetworkManager.sendChargerRequest(item: item, location: location, username: username, uid: uid, number: number)
+                        
+                        handleSegue(type: "request")
+                        
+                        AppManager.requesting = true;
+                    }
+                }
             }
         }
     }
@@ -88,6 +90,7 @@ extension MessagesController {
         }
         
         let loginController = LoginController()
+        loginController.messagesController = self
         present(loginController, animated: true, completion: nil)
     }
     

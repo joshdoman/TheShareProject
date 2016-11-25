@@ -6,22 +6,14 @@
 //  Copyright © 2016 Josh Doman. All rights reserved.
 //
 
-import Foundation
-import Firebase
+import UIKit
 
-struct User {
+class User: NSObject {
     
-    let uid: String
-    let email: String
-    
-    init(authData: FIRUser) {
-        uid = authData.uid
-        email = authData.email!
-    }
-    
-    init(uid: String, email: String) {
-        self.uid = uid
-        self.email = email
-    }
+    var uid: String?
+    var name: String?
+    var email: String?
+    var number: String?
+    var profileImageUrl: String?
     
 }

@@ -144,55 +144,14 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     
     func checkIfUserIsLoggedIn() {
         // user is not loggen in
-        if FIRAuth.auth()?.currentUser?.uid == nil {
+        if AppManager.getCurrentUID() == nil {
+            
             perform(#selector(handleLogout), with: nil, afterDelay: 0)
+            
         } else {
-//            let uid = FIRAuth.auth()?.currentUser?.uid
-//            let ref = FIRDatabase.database().reference().child("users").child(uid!)
-//            ref.observeSingleEvent(of: .value, with: { (snapshot) in
-//                
-//                print(snapshot)
-////                                if let dictionary = snapshot.value as? [String: AnyObject] {
-////                                    self.navigationItem.title = dictionary["name"] as? String
-////                                    User.name = dictionary["name"] as? String
-////                                    User.email = dictionary["email"] as? String
-////                                    User.number = dictionary["number"] as? String
-////                                }
-//                ref.child(byAppendingPath: "name").observeSingleEvent(of: .value, with: { snapshot in
-//                    
-//                    print(snapshot.value ?? "myName")
-//                    //self.navigationItem.title = snapshot.value ?? "testName" as? String
-//                    
-//                })
-//                                //self.navigationItem.title = ref.child("name") as? String
-//                
-//            }, withCancel: nil)
-            FIRAuth.auth()!.addStateDidChangeListener { auth, user in
-                guard let user = user else { return }
-                ThisUser.user = User(authData: user)
-                //print(ThisUser.user!.email)
-                let uid = ThisUser.user!.uid
-                let ref = FIRDatabase.database().reference().child("users").child(uid)
-                //let ref = FIRDatabase.database().reference().child("users").child(uid).child("name")
-//                ref.observeSingleEvent(of: .value, with: { (snapshot) in
-//                    //print(snapshot.value ?? "testName")
-//                    if let name = snapshot.value {
-//                        ThisUser.name = name as? String
-//                    }
-//                    print(ThisUser.name!)
-//                })
-                ref.observeSingleEvent(of: .value, with: { (snapshot) in
-                    if let dictionary = snapshot.value as? [String: AnyObject] {
-                        self.navigationItem.title = dictionary["name"] as? String
-                        ThisUser.name = dictionary["name"] as? String
-                        ThisUser.email = dictionary["email"] as? String
-                        ThisUser.number = dictionary["number"] as? String
-                        ThisUser.uid = uid
-                        //print(dictionary["name"])
-                        print("success")
-                    }
-                })
-            }
+            
+            fetchUserAndSetupNavBarTitle()
+
         }
     }
     
@@ -259,23 +218,28 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         needCharger = Products.options[row]
     }
     
-//    func fetchUserAndSetupNavBarTitle() {
-//        guard let uid = FIRAuth.auth()?.currentUser?.uid else {
-//            return
-//        }
-//        
-//        FIRDatabase.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
-//            if let dictionary = snapshot.value as? [String: AnyObject] {
-//                let user = User()
-//                user.setValuesForKeys(dictionary)
-//                self.setupNavBarWithUser(user: user)
-//            }
-//            
-//        }, withCancel: nil)
-//    }
-//    
-//    func setupNavBarWithUser(user: User) {
-//        self.navigationItem.title = user.name
-//    }
+    func fetchUserAndSetupNavBarTitle() {
+        guard let uid = AppManager.getCurrentUID() else {
+            return
+        }
+        
+        FIRDatabase.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                let user = User()
+                user.setValuesForKeys(dictionary)
+                user.uid = uid
+                self.setupNavBarWithUser(user: user)
+            }
+            
+        }, withCancel: nil)
+    }
+    
+    func setupNavBarWithUser(user: User) {
+        //do other stuff to set up messagesController
+        
+        AppManager.currentUser = user
+        
+        self.navigationItem.title = user.name
+    }
 }
 
