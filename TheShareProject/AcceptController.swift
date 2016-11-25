@@ -11,9 +11,13 @@ import UIKit
 class AcceptController: UIViewController {
 
     
-    @IBOutlet weak var request: UILabel!
+    @IBOutlet weak var requestItem: UILabel!
     @IBOutlet weak var requestMsg: UILabel!
     @IBOutlet weak var requestProfile: UIImageView!
+    
+    var messageController: MessagesController?
+    var request: Request?
+    var requestId: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,27 +39,11 @@ class AcceptController: UIViewController {
     
     
     @IBAction func deny(_ sender: Any) {
+        _ = messageController?.requestDictionary.removeValue(forKey: requestId!)
+        messageController?.requests.remove(at: (messageController?.requests.index(of: requestId!))!)
+        UserDefaults.standard.setIsHandlingRequest(value: false)
         dismiss(animated: true, completion: nil)
         //AppManager.handlingRequest = false    //makes pop back up
     }
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

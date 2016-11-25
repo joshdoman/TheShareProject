@@ -13,6 +13,7 @@ class NetworkManager {
     
     static func sendChargerRequest(item: String, location: String, username: String, uid: String, number: String) {
         
+        
         let url = URL(string: "http://localhost:3000/notify/all")
         
         let request = NSMutableURLRequest(url: url!)
@@ -121,4 +122,6 @@ class NetworkManager {
             task.resume()
         }
     }
+    
+    
 }

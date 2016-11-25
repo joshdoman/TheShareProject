@@ -87,20 +87,49 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        NetworkManager.getOutstandingRequest()
+        //NetworkManager.getOutstandingRequest()
         
         checkIfUserIsLoggedIn()
         
-        MessagesController.requested = false;
-        AppManager.requesting = false;
-        AppManager.handlingRequest = false;
+        UserDefaults.standard.setIsHandlingRequest(value: false)
         needCharger = Products.options[0]
-        
-        myTimer = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(handleGet), userInfo: nil, repeats: true)
         
         handleCheckRequests()
         
         setupController()
+        
+        //NetworkManager.checkFirebaseForOutstandingRequests(user: AppManager.currentUser!)
+    }
+    
+    var requests = [String]()
+    var requestDictionary = [String: Request]()
+    
+    private func fetchRequestsFromFirebase() {
+        FIRDatabase.database().reference().child("requests").observe(.childAdded, with: { (snapshot) in
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                let request = Request(dictionary: dictionary)
+                self.requestDictionary[snapshot.key] = request
+                if let name = self.requestDictionary[snapshot.key] {
+                    print(name)
+                }
+
+            }
+            
+            self.attemptReload()
+            
+        }, withCancel: nil)
+    }
+    
+    var timer: Timer?
+    
+    private func attemptReload() {
+        self.timer?.invalidate()
+        self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.handleReload), userInfo: nil, repeats: false)
+    }
+    
+    func handleReload() {
+        self.requests = Array<String>(self.requestDictionary.keys)
+        print(requests)
     }
     
     func setupController() {
@@ -154,8 +183,6 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
 
         }
     }
-    
-    
     
     func setupGetHelpButton() {
         //need x, y, height constraints
@@ -219,6 +246,7 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     }
     
     func fetchUserAndSetupNavBarTitle() {
+        
         guard let uid = AppManager.getCurrentUID() else {
             return
         }
@@ -238,6 +266,14 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         //do other stuff to set up messagesController
         
         AppManager.currentUser = user
+        
+        fetchRequestsFromFirebase()
+        
+        if !UserDefaults.standard.isHandlingRequest() {
+            myTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(handleGet), userInfo: nil, repeats: true)
+        }
+        
+        //print(AppManager.currentUser?.name!)
         
         self.navigationItem.title = user.name
     }

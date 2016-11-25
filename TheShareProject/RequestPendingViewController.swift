@@ -32,6 +32,5 @@ class RequestPendingViewController: UIViewController {
     
     func handleBack() {
         dismiss(animated: true, completion: nil)
-        AppManager.requesting = true;
     }
 }

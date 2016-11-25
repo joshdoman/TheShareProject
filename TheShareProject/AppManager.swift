@@ -20,4 +20,6 @@ class AppManager: NSObject {
     
     static var currentUser: User?
     
+    static var requestDictionary: [String: Request]?
+    
 }

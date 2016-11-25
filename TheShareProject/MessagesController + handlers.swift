@@ -22,6 +22,7 @@ extension MessagesController {
                         print("I need a " + needCharger + ". " + text)
                         let item = needCharger!
                         let location = text
+                        //let timestamp = NSNumber(value: Int(NSDate().timeIntervalSince1970))
                         
                         // Send POST request to /notify/all
                         
@@ -29,7 +30,7 @@ extension MessagesController {
                         
                         handleSegue(type: "request")
                         
-                        AppManager.requesting = true;
+                        UserDefaults.standard.setIsHandlingRequest(value: true)
                     }
                 }
             }
@@ -45,13 +46,15 @@ extension MessagesController {
     
     func handleGet()
     {
-        if AppManager.handlingRequest! == false && AppManager.requesting! == false {
-            handleCheckRequests()
-            if MessagesController.requested! == true {
-                AppManager.handlingRequest = true
-                MessagesController.requested = false
-                handleSegue(type: "accept") //go to new viewcontroller
-            }
+        if !requests.isEmpty && !UserDefaults.standard.isHandlingRequest() && !UserDefaults.standard.isRequesting() {
+            UserDefaults.standard.setIsHandlingRequest(value: true)
+            let requestId = requests.first
+            let request = requestDictionary[requestId!]
+            let acceptController = AcceptController()
+            acceptController.requestId = requestId
+            acceptController.request = request
+            acceptController.messageController = self
+            present(acceptController, animated: true, completion: nil)
         }
     }
     
