@@ -7,17 +7,19 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+var json = require('json');
+
 var twilio = require('twilio'),
 client = twilio('AC1acbcc7f6ef2e5df59f9fb992a96002d', '4e65a9376d401148d92ef63e9cad750b'),
 cronJob = require('cron').CronJob;
 
 var Firebase = require("firebase-admin");
 
-var serviceAccount = require("/Users/joshdoman/Documents/Project/ShareNode/theshareproject-ba012-firebase-adminsdk-52f3u-331abcc0d7.json");
+var serviceAccount = require("/Users/joshdoman/Documents/Project/ShareNode/theshareproject-c9742-firebase-adminsdk-okgvy-9aabfde878.json");
 
 Firebase.initializeApp({
   credential: Firebase.credential.cert(serviceAccount),
-  databaseURL: "https://theshareproject-ba012.firebaseio.com"
+  databaseURL: "https://theshareproject-c9742.firebaseio.com"
 });
 
 var db = Firebase.database();
@@ -25,6 +27,8 @@ var db = Firebase.database();
 var requests = db.ref("requests");
 var users = db.ref("users");
 var data = db.ref("data");
+//var testData = db.ref("testdata");
+var testData = db.ref("testdata2");
 
 var requesting = false;
 
@@ -136,6 +140,20 @@ app.get('/info', function (req, res) {
     'Content-Type':'text/xml'
   });
   res.end(resp);
+});
+
+app.get('/getRequestInfo', function (req, res) {
+    res.writeHead(200, {'Content-Type': "application/json"});
+    testData.on("value", function(snapshot) {
+      var requestDict = snapshot.val();
+      //console.log("Item: " + requestDict.item)
+      //console.log("Location: " + requestDict.location);
+      //console.log(requestDict);
+      var jsonDict = JSON.stringify(requestDict);
+      console.log(jsonDict);
+      console.log("request Dict: " + jsonDict);//TODO-- debugging output
+      res.end(jsonDict);
+    });
 });
 
 var server = app.listen(3000, function() {
