@@ -4,13 +4,13 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AcceptController" customModule="TheShareProject" customModuleProvider="target">
             <connections>
+                <outlet property="message" destination="eAo-zh-v8E" id="BIF-zq-E4J"/>
                 <outlet property="request" destination="eAo-zh-v8E" id="hMj-g3-yL8"/>
                 <outlet property="requestMsg" destination="7GD-sO-RAz" id="UZT-sF-zvt"/>
                 <outlet property="requestProfile" destination="AHF-ra-Vjn" id="ad8-lV-UwS"/>

@@ -11,9 +11,8 @@ import Firebase
 
 class Request: NSObject {
     
-    var requestId: String?
     var fromId: String?
-    var location: String?
+    var message: String?
     var timestamp: NSNumber?
     var item: String?
     var name: String?
@@ -22,8 +21,9 @@ class Request: NSObject {
         super.init()
         
         name = dictionary["name"] as? String
-        location = dictionary["location"] as? String
+        message = dictionary["message"] as? String
         item = dictionary["item"] as? String
+        timestamp = dictionary["timestamp"] as? NSNumber
         
     }
     

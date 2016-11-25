@@ -94,8 +94,6 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         UserDefaults.standard.setIsHandlingRequest(value: false)
         needCharger = Products.options[0]
         
-        handleCheckRequests()
-        
         setupController()
         
         //NetworkManager.checkFirebaseForOutstandingRequests(user: AppManager.currentUser!)
@@ -108,11 +106,8 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         FIRDatabase.database().reference().child("requests").observe(.childAdded, with: { (snapshot) in
             if let dictionary = snapshot.value as? [String: AnyObject] {
                 let request = Request(dictionary: dictionary)
+                request.fromId = snapshot.key
                 self.requestDictionary[snapshot.key] = request
-                if let name = self.requestDictionary[snapshot.key] {
-                    print(name)
-                }
-
             }
             
             self.attemptReload()

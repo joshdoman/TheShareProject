@@ -34,7 +34,7 @@ class AcceptController: UIViewController {
 
     
     @IBAction func accept(_ sender: UIButton) {
-        print(requestMsg.text ?? "no message")
+        print("accept")
     }
     
     

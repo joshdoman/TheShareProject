@@ -18,30 +18,56 @@ extension MessagesController {
             } else {
                 
                 if let user = AppManager.currentUser {
-                    if let username = user.name, let uid = user.uid, let number = user.number {
-                        print("I need a " + needCharger + ". " + text)
+                    
+                    if let name = user.name, let uid = user.uid, let number = user.number {
                         let item = needCharger!
-                        let location = text
-                        //let timestamp = NSNumber(value: Int(NSDate().timeIntervalSince1970))
+                        let message = text
+                        let timestamp = NSNumber(value: Int(NSDate().timeIntervalSince1970))
                         
-                        // Send POST request to /notify/all
+                        let values = ["name": name as AnyObject, "item": item as AnyObject, "number": number as AnyObject, "timestamp": timestamp, "message": message as AnyObject] as [String : AnyObject]
                         
-                        NetworkManager.sendChargerRequest(item: item, location: location, username: username, uid: uid, number: number)
+                        sendRequestToFirebase(uid: uid, values: values)
                         
-                        handleSegue(type: "request")
+                        NetworkManager.sendChargerRequestToServer(item: item, message: message, name: name, number: number)
                         
                         UserDefaults.standard.setIsHandlingRequest(value: true)
+                        segueToPending()
                     }
+                    
                 }
+                
+//                if let user = AppManager.currentUser {
+//                    if let username = user.name, let uid = user.uid, let number = user.number {
+//                        print("I need a " + needCharger + ". " + text)
+//                        let item = needCharger!
+//                        let location = text
+//                        //let timestamp = NSNumber(value: Int(NSDate().timeIntervalSince1970))
+//                        
+//                        // Send POST request to /notify/all
+//                        
+//                        NetworkManager.sendChargerRequest(item: item, location: location, username: username, uid: uid, number: number)
+//                        
+//                        handleSegue(type: "request")
+//                        
+//                        UserDefaults.standard.setIsHandlingRequest(value: true)
+//                    }
+//                }
             }
         }
     }
     
-    func handleCheckRequests() {
-        //Send GET request to /info
+    func sendRequestToFirebase(uid: String, values: [String: AnyObject]) {
+        let ref = FIRDatabase.database().reference().child("requests").child(uid)
+        ref.updateChildValues(values, withCompletionBlock: { (err, ref) in
+            
+            if err != nil {
+                print(err!)
+                return
+            }
         
-        //TODO
-        NetworkManager.areThereOutstandingRequests()
+        
+        })
+        
     }
     
     func handleGet()
@@ -75,13 +101,13 @@ extension MessagesController {
             //let navController = UINavigationController(rootViewController: acceptController)
             present(acceptController, animated: true, completion: nil)
             
-        } else if type == "request" {
-            
-            let requestController = RequestPendingViewController()
-            let navController = UINavigationController(rootViewController: requestController)
-            present(navController, animated: true, completion: nil)
-            
         }
+    }
+    
+    func segueToPending() {
+        let requestController = RequestPendingViewController()
+        let navController = UINavigationController(rootViewController: requestController)
+        present(navController, animated: true, completion: nil)
     }
     
     func handleLogout() {
