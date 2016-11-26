@@ -16,6 +16,4 @@ class User: NSObject {
     var number: String?
     var profileImageUrl: String?
     
-    var outstandingRequestsDictionary = [String: Bool]()
-    
 }

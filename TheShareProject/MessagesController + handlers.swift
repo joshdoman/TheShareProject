@@ -24,7 +24,7 @@ extension MessagesController {
                         let message = text
                         let timestamp = NSNumber(value: Int(NSDate().timeIntervalSince1970))
                         
-                        let values = ["name": name as AnyObject, "item": item as AnyObject, "number": number as AnyObject, "timestamp": timestamp, "message": message as AnyObject] as [String : AnyObject]
+                        let values = ["name": name as AnyObject, "item": item as AnyObject, "timestamp": timestamp, "message": message as AnyObject] as [String : AnyObject]
                         
                         sendRequestToFirebase(uid: uid, values: values)
                         
@@ -72,7 +72,11 @@ extension MessagesController {
     
     func handleGet()
     {
-        if !requests.isEmpty && !UserDefaults.standard.isHandlingRequest() && !UserDefaults.standard.isRequesting() {
+        if UserDefaults.standard.isRequesting() {
+            print("I am requesting!!!")
+            myTimer.invalidate()
+            segueToPending()
+        } else if !requests.isEmpty && !UserDefaults.standard.isHandlingRequest() {
             UserDefaults.standard.setIsHandlingRequest(value: true)
             let requestId = requests.first
             let request = requestDictionary[requestId!]
@@ -80,6 +84,7 @@ extension MessagesController {
             acceptController.requestId = requestId
             acceptController.request = request
             acceptController.messageController = self
+            myTimer.invalidate()
             present(acceptController, animated: true, completion: nil)
         }
     }
@@ -104,8 +109,23 @@ extension MessagesController {
         }
     }
     
+    func checkIfUserIsRequesting() {
+        guard let uid = AppManager.getCurrentUID() else {
+            return
+        }
+        
+        let ref = FIRDatabase.database().reference().child("requests")
+        ref.observeSingleEvent(of: .value, with: { (snapshot) in
+            
+            if snapshot.hasChild(uid) {
+                UserDefaults.standard.setIsRequesting(value: true)            }
+            
+        }, withCancel: nil)
+    }
+    
     func segueToPending() {
         let requestController = RequestPendingViewController()
+        requestController.messagesController = self
         let navController = UINavigationController(rootViewController: requestController)
         present(navController, animated: true, completion: nil)
     }

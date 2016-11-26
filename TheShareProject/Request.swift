@@ -25,6 +25,7 @@ class Request: NSObject {
         item = dictionary["item"] as? String
         timestamp = dictionary["timestamp"] as? NSNumber
         
+        
     }
     
 }

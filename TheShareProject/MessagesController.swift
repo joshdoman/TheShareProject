@@ -19,7 +19,6 @@ import Foundation
 class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     
     var needCharger: String!
-    static var requested: Bool?
     var myTimer: Timer!
     
     lazy var getHelpButton: UIButton = {
@@ -257,6 +256,16 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         }, withCancel: nil)
     }
     
+    func showChatControllerForUser(user: User) {
+        let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
+        chatLogController.user = user
+        navigationController?.pushViewController(chatLogController, animated: true)
+    }
+    
+    func resetTimer() {
+        myTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(handleGet), userInfo: nil, repeats: true)
+    }
+    
     func setupNavBarWithUser(user: User) {
         //do other stuff to set up messagesController
         
@@ -264,9 +273,13 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         
         fetchRequestsFromFirebase()
         
-        if !UserDefaults.standard.isHandlingRequest() {
-            myTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(handleGet), userInfo: nil, repeats: true)
+        if !UserDefaults.standard.isRequesting() {
+            checkIfUserIsRequesting()
         }
+        
+        resetTimer()
+        
+        
         
         //print(AppManager.currentUser?.name!)
         
