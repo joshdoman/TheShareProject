@@ -50,11 +50,13 @@ class AcceptController: UIViewController {
     
     func handleAccept() {
         
-//        let acceptRef = FIRDatabase.database().reference().child("acceptances").child(requestId!)
-//        
-//        
+        guard let uid = AppManager.getCurrentUID() else {
+            return
+        }
         
+        let acceptRef = FIRDatabase.database().reference().child("acceptances").child(requestId!)
         
+        acceptRef.updateChildValues([uid: 1])
         
         let ref = FIRDatabase.database().reference().child("users").child(requestId!)
         

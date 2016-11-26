@@ -118,7 +118,8 @@ extension MessagesController {
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             
             if snapshot.hasChild(uid) {
-                UserDefaults.standard.setIsRequesting(value: true)            }
+                UserDefaults.standard.setIsRequesting(value: true)
+            }
             
         }, withCancel: nil)
     }

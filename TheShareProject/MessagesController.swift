@@ -88,9 +88,11 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         
         //NetworkManager.getOutstandingRequest()
         
+        UserDefaults.standard.setIsRequesting(value: false)
+        UserDefaults.standard.setIsHandlingRequest(value: false)
+        
         checkIfUserIsLoggedIn()
         
-        UserDefaults.standard.setIsHandlingRequest(value: false)
         needCharger = Products.options[0]
         
         setupController()
@@ -273,6 +275,7 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         
         fetchRequestsFromFirebase()
         
+        print(UserDefaults.standard.isRequesting())
         if !UserDefaults.standard.isRequesting() {
             checkIfUserIsRequesting()
         }
