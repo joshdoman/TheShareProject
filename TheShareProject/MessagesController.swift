@@ -111,63 +111,17 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        //NetworkManager.getOutstandingRequest()
-        
         checkIfUserIsLoggedIn()
         
         needCharger = Products.options[0]
         
         setupController()
-        
-        //NetworkManager.checkFirebaseForOutstandingRequests(user: AppManager.currentUser!)
     }
     
     var requests = [String]()
     var requestDictionary = [String: Request]()
     
-    private func fetchRequestsFromFirebase() {
-        FIRDatabase.database().reference().child("requests").observe(.childAdded, with: { (snapshot) in
-
-                if let dictionary = snapshot.value as? [String: AnyObject] {
-                    
-                    let request = Request(dictionary: dictionary)
-                    request.fromId = snapshot.key
-                    self.requestDictionary[snapshot.key] = request
-                }
-                
-                self.attemptReload()
-
-        }, withCancel: nil)
-        
-        removeDeniedRequest()
-        
-        attemptReload()
-    }
-    
-    func removeDeniedRequest() {
-        guard let uid = AppManager.getCurrentUID() else {
-            return
-        }
-        FIRDatabase.database().reference().child("denials").child(uid).observe(.childAdded, with: { (snapshot) in
-            
-            //print("removing \(snapshot.key)")
-            self.requestDictionary.removeValue(forKey: snapshot.key)
-            
-        }, withCancel: nil)
-    }
-    
     var timer: Timer?
-    var getTimer: Timer?
-    
-    private func attemptReload() {
-        self.timer?.invalidate()
-        self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.handleReload), userInfo: nil, repeats: false)
-    }
-    
-    func handleReload() {
-        self.requests = Array<String>(self.requestDictionary.keys)
-        print("requests \(self.requests)")
-    }
     
     func setupController() {
         
@@ -215,7 +169,7 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         if AppManager.getCurrentUID() == nil {
             
             perform(#selector(handleLogout), with: nil, afterDelay: 0)
-            
+
         } else {
             
             fetchUserAndSetupNavBarTitle()
@@ -315,46 +269,13 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         navigationController?.pushViewController(chatLogController, animated: true)
     }
     
-    func resetTimer() {
-        myTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(handleGet), userInfo: nil, repeats: true)
-    }
-    
-    func loadRequests() {
-        fetchRequestsFromFirebase()
-        removeDeniedRequest()
-    }
-    
     func resetMessageController() {
-        UserDefaults.standard.setIsRequesting(value: false)
-        UserDefaults.standard.setIsHandlingRequest(value: false)
-        
+
         requests.removeAll()
         requestDictionary.removeAll()
         
-        loadRequests()
+        checkIfHandlingRequestThenCheckIfRequesting()
         
-        print(requests)
-        
-        checkIfUserIsRequesting()
-        
-        //if(!UserDefaults.standard.isRequesting()) {
-        checkIfUserIsHandlingRequest()
-        //}
-        
-        
-    }
-    
-    private func attemptTimerReset() {
-        self.getTimer?.invalidate()
-        self.getTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(self.handleReset), userInfo: nil, repeats: false)
-    }
-    
-    func handleReset() {
-        print("handling \(UserDefaults.standard.isHandlingRequest())")
-
-        if !UserDefaults.standard.isHandlingRequest() {
-            resetTimer()
-        }
     }
     
     func setupNavBarWithUser(user: User) {
@@ -363,10 +284,6 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         AppManager.currentUser = user
 
         resetMessageController()
-        
-        attemptTimerReset()
-        
-        //print(AppManager.currentUser?.name!)
         
         self.navigationItem.title = user.name
     }

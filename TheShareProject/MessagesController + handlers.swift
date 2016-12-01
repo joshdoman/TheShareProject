@@ -30,34 +30,15 @@ extension MessagesController {
                         
                         NetworkManager.sendChargerRequestToServer(item: item, message: message, name: name, number: number)
                         
-                        UserDefaults.standard.setIsHandlingRequest(value: true)
                         segueToPending()
                     }
-                    
                 }
-                
-//                if let user = AppManager.currentUser {
-//                    if let username = user.name, let uid = user.uid, let number = user.number {
-//                        print("I need a " + needCharger + ". " + text)
-//                        let item = needCharger!
-//                        let location = text
-//                        //let timestamp = NSNumber(value: Int(NSDate().timeIntervalSince1970))
-//                        
-//                        // Send POST request to /notify/all
-//                        
-//                        NetworkManager.sendChargerRequest(item: item, location: location, username: username, uid: uid, number: number)
-//                        
-//                        handleSegue(type: "request")
-//                        
-//                        UserDefaults.standard.setIsHandlingRequest(value: true)
-//                    }
-//                }
             }
         }
     }
     
     func handleShowMessage() {
-        checkIfUserIsHandlingRequest()
+        checkIfHandlingRequestThenCheckIfRequesting()
     }
     
     func sendRequestToFirebase(uid: String, values: [String: AnyObject]) {
@@ -68,69 +49,33 @@ extension MessagesController {
                 print(err!)
                 return
             }
-        
-        
+            
         })
-        
-    }
-    
-    func handleGet()
-    {
-        print(UserDefaults.standard.isHandlingRequest())
-//        if UserDefaults.standard.isRequesting()
-        if UserDefaults.standard.isRequesting() {
-            print("I am requesting!!!")
-            myTimer.invalidate()
-            segueToPending()
-        } else if !requests.isEmpty && !UserDefaults.standard.isHandlingRequest() {
-            UserDefaults.standard.setIsHandlingRequest(value: true)
-            let requestId = requests.first
-            let request = requestDictionary[requestId!]
-            let acceptController = AcceptController()
-            acceptController.requestId = requestId
-            acceptController.request = request
-            acceptController.messageController = self
-            myTimer.invalidate()
-            present(acceptController, animated: true, completion: nil)
-        }
     }
     
     func handleProfile() {
-        handleSegue(type: "profile")
+        let profileController = ProfileViewController()
+        let navController = UINavigationController(rootViewController: profileController)
+        present(navController, animated: true, completion: nil)
     }
     
-    func handleSegue(type: String) {
-        if type == "profile" {
+    func openChatControllerWithPartner(uid: String) {
+        FIRDatabase.database().reference().child("acceptances").child(uid).observeSingleEvent(of: .childAdded, with: { (snapshot) in
+            //print(snapshot.key)
             
-            let profileController = ProfileViewController()
-            let navController = UINavigationController(rootViewController: profileController)
-            present(navController, animated: true, completion: nil)
-            
-        } else if type == "accept" {
-            
-            let acceptController = AcceptController()
-            //let navController = UINavigationController(rootViewController: acceptController)
-            present(acceptController, animated: true, completion: nil)
-            
-        }
-    }
-    
-    func checkIfUserIsRequesting() {
-        guard let uid = AppManager.getCurrentUID() else {
-            return
-        }
-        
-        let ref = FIRDatabase.database().reference().child("requests")
-        ref.observeSingleEvent(of: .value, with: { (snapshot) in
-            
-            if snapshot.hasChild(uid) {
-                UserDefaults.standard.setIsRequesting(value: true)
-            }
-            
+            FIRDatabase.database().reference().child("users").child(snapshot.key).observeSingleEvent(of: .value, with: { (snapshot) in
+                if let dictionary = snapshot.value as? [String: AnyObject] {
+                    let user = User()
+                    user.setValuesForKeys(dictionary)
+                    user.uid = snapshot.key
+                    self.showChatControllerForUser(user: user)
+                }
+                
+            }, withCancel: nil)
         }, withCancel: nil)
     }
     
-    func checkIfUserIsHandlingRequest() {
+    func checkIfHandlingRequestThenCheckIfRequesting() {
         guard let uid = AppManager.getCurrentUID() else {
             return
         }
@@ -138,27 +83,84 @@ extension MessagesController {
         FIRDatabase.database().reference().child("acceptances").observeSingleEvent(of: .value, with: { (snapshot) in
             
             if snapshot.hasChild(uid) {
-                
-                //print("found")
-                
-                
-                FIRDatabase.database().reference().child("acceptances").child(uid).observeSingleEvent(of: .childAdded, with: { (snapshot) in
-                    //print(snapshot.key)
-                    
-                    FIRDatabase.database().reference().child("users").child(snapshot.key).observeSingleEvent(of: .value, with: { (snapshot) in
-                        if let dictionary = snapshot.value as? [String: AnyObject] {
-                            let user = User()
-                            user.setValuesForKeys(dictionary)
-                            user.uid = snapshot.key
-                            self.showChatControllerForUser(user: user)
-                        }
-                        
-                    }, withCancel: nil)
-                }, withCancel: nil)
-            
+                print("someone has accepted")
+                self.openChatControllerWithPartner(uid: uid)
+            } else {
+                self.checkIfUserIsRequestingOrIfSomeoneElseIsRequesting(uid: uid)
             }
             
         }, withCancel: nil)
+    }
+    
+    func checkIfUserIsRequestingOrIfSomeoneElseIsRequesting(uid: String) {
+        
+        let ref = FIRDatabase.database().reference().child("requests")
+        ref.observeSingleEvent(of: .value, with: { (snapshot) in
+            
+            if snapshot.hasChild(uid) {
+                UserDefaults.standard.setIsRequesting(value: true)
+                print("I am requesting")
+                self.segueToPending()
+            } else if snapshot.hasChildren() {
+                print("there's a request out there")
+                self.fetchRequestsFromFirebase()
+            }
+            
+        }, withCancel: nil)
+    }
+    
+    func pushAllAcceptControllers() {
+        if !requests.isEmpty {
+            let requestId = requests.first
+            requests.removeFirst()
+            
+            let acceptController = AcceptController()
+            
+            acceptController.messageController = self
+            acceptController.requestId = requestId
+            
+            print("present")
+            present(acceptController, animated: true, completion: nil)
+        }
+    }
+    
+    //this version pops up one request at a time
+    func fetchRequestsFromFirebase() {
+        FIRDatabase.database().reference().child("requests").observe(.childAdded, with: { (snapshot) in
+            
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                
+                let request = Request(dictionary: dictionary)
+                request.fromId = snapshot.key
+                self.requestDictionary[snapshot.key] = request
+            }
+            
+            self.attemptToLoadRequests()
+            
+        }, withCancel: nil)
+        
+    }
+    
+    
+    func removeDeniedRequest() {
+        guard let uid = AppManager.getCurrentUID() else {
+            return
+        }
+        
+        FIRDatabase.database().reference().child("denials").child(uid).observe(.value, with: { (snapshot) in
+            
+            if let dictionary = snapshot.value as? [String:AnyObject] {
+                for request in self.requests {
+                    if dictionary[request] != nil, let index = self.requests.index(of: request) {
+                        self.requests.remove(at: index)
+                    }
+                }
+            }
+
+            self.pushAllAcceptControllers()
+            
+        }, withCancel: nil)
+        
     }
     
     func segueToPending() {
@@ -179,6 +181,16 @@ extension MessagesController {
         let loginController = LoginController()
         loginController.messagesController = self
         present(loginController, animated: true, completion: nil)
+    }
+    
+    func attemptToLoadRequests() {
+        self.timer?.invalidate()
+        self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.handleLoadRequests), userInfo: nil, repeats: false)
+    }
+    
+    func handleLoadRequests() {
+        self.requests = Array<String>(self.requestDictionary.keys)
+        removeDeniedRequest()
     }
     
 }

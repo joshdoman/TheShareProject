@@ -18,7 +18,6 @@
 		211434231DDE10CA001A2495 /* Products.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211434221DDE10CA001A2495 /* Products.swift */; };
 		211434261DDE2FA9001A2495 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211434241DDE2FA9001A2495 /* ProfileViewController.swift */; };
 		211434271DDE2FA9001A2495 /* ProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 211434251DDE2FA9001A2495 /* ProfileViewController.xib */; };
-		2114342A1DDE3A93001A2495 /* AcceptController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211434281DDE3A93001A2495 /* AcceptController.swift */; };
 		2114342E1DDF487D001A2495 /* CongratsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2114342C1DDF487D001A2495 /* CongratsController.swift */; };
 		2114342F1DDF487D001A2495 /* CongratsController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2114342D1DDF487D001A2495 /* CongratsController.xib */; };
 		2176B9C21DDAC63A0058394A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2176B9C11DDAC63A0058394A /* AppDelegate.swift */; };
@@ -28,6 +27,7 @@
 		2176B9D71DDAC63A0058394A /* TheShareProjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2176B9D61DDAC63A0058394A /* TheShareProjectTests.swift */; };
 		218010971DE2AD3A00AE9EDB /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218010961DE2AD3A00AE9EDB /* AppManager.swift */; };
 		2180109B1DE2AE7800AE9EDB /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2180109A1DE2AE7800AE9EDB /* User.swift */; };
+		21D9691E1DF0AD0D002C0122 /* AcceptController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D9691D1DF0AD0D002C0122 /* AcceptController.swift */; };
 		21DF6A351DE4C798007A1F28 /* LoginController + handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DF6A341DE4C798007A1F28 /* LoginController + handlers.swift */; };
 		21DF6A371DE4C8A6007A1F28 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DF6A361DE4C8A6007A1F28 /* NetworkManager.swift */; };
 		21DF6A3B1DE64A6E007A1F28 /* MessagesController + handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DF6A3A1DE64A6E007A1F28 /* MessagesController + handlers.swift */; };
@@ -62,7 +62,6 @@
 		211434221DDE10CA001A2495 /* Products.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Products.swift; sourceTree = "<group>"; };
 		211434241DDE2FA9001A2495 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		211434251DDE2FA9001A2495 /* ProfileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileViewController.xib; sourceTree = "<group>"; };
-		211434281DDE3A93001A2495 /* AcceptController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcceptController.swift; sourceTree = "<group>"; };
 		2114342C1DDF487D001A2495 /* CongratsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CongratsController.swift; sourceTree = "<group>"; };
 		2114342D1DDF487D001A2495 /* CongratsController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CongratsController.xib; sourceTree = "<group>"; };
 		2176B9BE1DDAC63A0058394A /* TheShareProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheShareProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -76,6 +75,7 @@
 		2176B9D81DDAC63A0058394A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		218010961DE2AD3A00AE9EDB /* AppManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
 		2180109A1DE2AE7800AE9EDB /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		21D9691D1DF0AD0D002C0122 /* AcceptController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcceptController.swift; sourceTree = "<group>"; };
 		21DF6A341DE4C798007A1F28 /* LoginController + handlers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LoginController + handlers.swift"; sourceTree = "<group>"; };
 		21DF6A361DE4C8A6007A1F28 /* NetworkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		21DF6A3A1DE64A6E007A1F28 /* MessagesController + handlers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MessagesController + handlers.swift"; sourceTree = "<group>"; };
@@ -119,7 +119,7 @@
 				2114341B1DDC1A7C001A2495 /* MessagesController.swift */,
 				2114341D1DDC1F63001A2495 /* LoginController.swift */,
 				211434241DDE2FA9001A2495 /* ProfileViewController.swift */,
-				211434281DDE3A93001A2495 /* AcceptController.swift */,
+				21D9691D1DF0AD0D002C0122 /* AcceptController.swift */,
 				2114342C1DDF487D001A2495 /* CongratsController.swift */,
 				06D8D19C1DDF45A200180EA1 /* RequestPendingViewController.swift */,
 				06AD351F1DDF4C5C00C7FF64 /* ConfirmationViewController.swift */,
@@ -457,11 +457,11 @@
 				211434231DDE10CA001A2495 /* Products.swift in Sources */,
 				211434261DDE2FA9001A2495 /* ProfileViewController.swift in Sources */,
 				21DF6ADB1DE8FCE8007A1F28 /* ChatLogController.swift in Sources */,
+				21D9691E1DF0AD0D002C0122 /* AcceptController.swift in Sources */,
 				218010971DE2AD3A00AE9EDB /* AppManager.swift in Sources */,
 				21DF6AE11DE8FD40007A1F28 /* ChatInputContainerView.swift in Sources */,
 				21DF6AD61DE806AC007A1F28 /* Extensions.swift in Sources */,
 				21DF6A371DE4C8A6007A1F28 /* NetworkManager.swift in Sources */,
-				2114342A1DDE3A93001A2495 /* AcceptController.swift in Sources */,
 				21DF6AE01DE8FD40007A1F28 /* ChatMessageCell.swift in Sources */,
 				2114341E1DDC1F63001A2495 /* LoginController.swift in Sources */,
 				2180109B1DE2AE7800AE9EDB /* User.swift in Sources */,

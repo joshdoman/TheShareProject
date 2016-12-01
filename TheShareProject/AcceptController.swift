@@ -1,8 +1,8 @@
 //
-//  AcceptController.swift
+//  AcceptController2.swift
 //  TheShareProject
 //
-//  Created by Josh Doman on 11/17/16.
+//  Created by Josh Doman on 12/1/16.
 //  Copyright © 2016 Josh Doman. All rights reserved.
 //
 
@@ -10,7 +10,7 @@ import UIKit
 import Firebase
 
 class AcceptController: UIViewController {
-
+    
     lazy var denyButton: UIButton = {
         let button = UIButton(type: .system)
         let image = UIImage(named: "Cancel-50")
@@ -26,16 +26,67 @@ class AcceptController: UIViewController {
         button.addTarget(self, action: #selector(handleAccept), for: .touchUpInside)
         return button
     }()
-
+    
+    let topBar: UIView = {
+        let view = UIView()
+        view.backgroundColor = .green
+        return view
+    }()
+    
     
     var messageController: MessagesController?
-    var request: Request?
+
     var requestId: String?
+    
+    var requestArray: [String]?
+    
+    var requestDictionary: [String: Request]?
+    
+    var myRequest: Request?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
         view.backgroundColor = .white
         
+        requestArray = messageController?.requests
+        requestDictionary = messageController?.requestDictionary
+        myRequest = requestDictionary?[requestId!]
+        
+        setupController()
+        
+        attemptPopUp()
+    }
+    
+    var timer: Timer?
+    
+    func attemptPopUp() {
+        self.timer?.invalidate()
+        self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.handlePopUp), userInfo: nil, repeats: false)
+    }
+    
+    func handlePopUp() {
+        popUpNextAcceptController()
+    }
+    
+    func popUpNextAcceptController() {
+        if !(messageController?.requests.isEmpty)! {
+            let nextRequestId = messageController?.requests.first
+            messageController?.requests.removeFirst()
+            
+            let acceptController = AcceptController()
+            
+            acceptController.messageController = messageController
+            acceptController.requestId = nextRequestId
+            
+            print("present")
+            present(acceptController, animated: true, completion: nil)
+        }
+    }
+    
+    func setupController() {
+        view.addSubview(topBar)
         view.addSubview(denyButton)
         view.addSubview(acceptButton)
         
@@ -45,7 +96,7 @@ class AcceptController: UIViewController {
         _ = acceptButton.anchor(view.centerYAnchor, left: nil, bottom: nil, right: nil, topConstant: 0, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 40, heightConstant: 40)
         acceptButton.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 80).isActive = true
         
-        
+        _ = topBar.anchor(view.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topConstant: 0, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 0, heightConstant: 100)
     }
     
     func handleAccept() {
@@ -95,12 +146,8 @@ class AcceptController: UIViewController {
         
         acceptRef.updateChildValues([requestId!: 1])
         
-        _ = messageController?.requestDictionary.removeValue(forKey: requestId!)
-        messageController?.requests.remove(at: (messageController?.requests.index(of: requestId!))!)
-        messageController?.resetTimer()
-        UserDefaults.standard.setIsHandlingRequest(value: false)
         dismiss(animated: true, completion: nil)
-        //AppManager.handlingRequest = false    //makes pop back up
     }
-
+    
 }
+
