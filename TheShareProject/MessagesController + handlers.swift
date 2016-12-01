@@ -56,6 +56,10 @@ extension MessagesController {
         }
     }
     
+    func handleShowMessage() {
+        checkIfUserIsHandlingRequest()
+    }
+    
     func sendRequestToFirebase(uid: String, values: [String: AnyObject]) {
         let ref = FIRDatabase.database().reference().child("requests").child(uid)
         ref.updateChildValues(values, withCompletionBlock: { (err, ref) in
@@ -72,6 +76,8 @@ extension MessagesController {
     
     func handleGet()
     {
+        print(UserDefaults.standard.isHandlingRequest())
+//        if UserDefaults.standard.isRequesting()
         if UserDefaults.standard.isRequesting() {
             print("I am requesting!!!")
             myTimer.invalidate()
@@ -119,6 +125,37 @@ extension MessagesController {
             
             if snapshot.hasChild(uid) {
                 UserDefaults.standard.setIsRequesting(value: true)
+            }
+            
+        }, withCancel: nil)
+    }
+    
+    func checkIfUserIsHandlingRequest() {
+        guard let uid = AppManager.getCurrentUID() else {
+            return
+        }
+        
+        FIRDatabase.database().reference().child("acceptances").observeSingleEvent(of: .value, with: { (snapshot) in
+            
+            if snapshot.hasChild(uid) {
+                
+                //print("found")
+                
+                
+                FIRDatabase.database().reference().child("acceptances").child(uid).observeSingleEvent(of: .childAdded, with: { (snapshot) in
+                    //print(snapshot.key)
+                    
+                    FIRDatabase.database().reference().child("users").child(snapshot.key).observeSingleEvent(of: .value, with: { (snapshot) in
+                        if let dictionary = snapshot.value as? [String: AnyObject] {
+                            let user = User()
+                            user.setValuesForKeys(dictionary)
+                            user.uid = snapshot.key
+                            self.showChatControllerForUser(user: user)
+                        }
+                        
+                    }, withCancel: nil)
+                }, withCancel: nil)
+            
             }
             
         }, withCancel: nil)

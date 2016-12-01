@@ -54,9 +54,13 @@ class AcceptController: UIViewController {
             return
         }
         
-        let acceptRef = FIRDatabase.database().reference().child("acceptances").child(requestId!)
+        let acceptRef1 = FIRDatabase.database().reference().child("acceptances").child(requestId!)
         
-        acceptRef.updateChildValues([uid: 1])
+        acceptRef1.updateChildValues([uid: 1])
+        
+        let acceptRef2 = FIRDatabase.database().reference().child("acceptances").child(uid)
+        
+        acceptRef2.updateChildValues([requestId!: 1])
         
         let ref = FIRDatabase.database().reference().child("users").child(requestId!)
         
@@ -82,6 +86,15 @@ class AcceptController: UIViewController {
     
     
     func handleDeny() {
+        
+        guard let uid = AppManager.getCurrentUID() else {
+            return
+        }
+        
+        let acceptRef = FIRDatabase.database().reference().child("denials").child(uid)
+        
+        acceptRef.updateChildValues([requestId!: 1])
+        
         _ = messageController?.requestDictionary.removeValue(forKey: requestId!)
         messageController?.requests.remove(at: (messageController?.requests.index(of: requestId!))!)
         messageController?.resetTimer()

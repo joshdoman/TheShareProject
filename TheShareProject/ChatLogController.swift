@@ -15,8 +15,25 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         didSet {
             navigationItem.title = user?.name
             
+            let image = UIImage(named: "Checked-50")
+            navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(handleEndSession))
+            
             observeMessages()
         }
+    }
+    
+    func handleEndSession() {
+        navigationController?.popToRootViewController(animated: true)
+        removeAllEvidenceOfRequest()
+    }
+    
+    func removeAllEvidenceOfRequest() {
+        guard let uid = AppManager.getCurrentUID() else {
+            return
+        }
+        
+        FIRDatabase.database().reference().child("acceptances").child(uid).removeValue()
+        FIRDatabase.database().reference().child("requests").child(uid).removeValue()
     }
     
     var messages = [Message]()
@@ -60,6 +77,8 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        print(UserDefaults.standard.isHandlingRequest())
         
         collectionView?.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
         //        collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
@@ -337,6 +356,9 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         let childRef = ref.childByAutoId()
         let toId = user!.uid!
         let fromId = FIRAuth.auth()?.currentUser!.uid
+        
+        
+        
         let timestamp = NSNumber(value: Int(NSDate().timeIntervalSince1970))
         var values: [String: AnyObject] = ["toId": toId as AnyObject, "fromId": fromId! as AnyObject, "timestamp": timestamp as AnyObject]
         

@@ -34,7 +34,32 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         return button
     }()
     
-
+    let blackView = UIView()
+    
+    func showMessageButton() {
+        view.addSubview(blackView)
+        
+        blackView.backgroundColor = UIColor(white: 0, alpha: 0.5)
+        
+        blackView.frame = view.frame
+        blackView.alpha = 0
+        
+        //animation
+//        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+//            self.blackView.alpha = 1
+//        }, completion: nil)
+    }
+    
+    lazy var goToMessage: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Go to message", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        
+        button.addTarget(self, action: #selector(handleShowMessage), for: .touchUpInside)//TODO-- change selector back to handleGetHelp
+        
+        return button
+    }()
     
     let textMessage: UITextField = {
         let text = UITextField()
@@ -88,9 +113,6 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         
         //NetworkManager.getOutstandingRequest()
         
-        UserDefaults.standard.setIsRequesting(value: false)
-        UserDefaults.standard.setIsHandlingRequest(value: false)
-        
         checkIfUserIsLoggedIn()
         
         needCharger = Products.options[0]
@@ -105,18 +127,37 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     
     private func fetchRequestsFromFirebase() {
         FIRDatabase.database().reference().child("requests").observe(.childAdded, with: { (snapshot) in
-            if let dictionary = snapshot.value as? [String: AnyObject] {
-                let request = Request(dictionary: dictionary)
-                request.fromId = snapshot.key
-                self.requestDictionary[snapshot.key] = request
-            }
+
+                if let dictionary = snapshot.value as? [String: AnyObject] {
+                    
+                    let request = Request(dictionary: dictionary)
+                    request.fromId = snapshot.key
+                    self.requestDictionary[snapshot.key] = request
+                }
+                
+                self.attemptReload()
+
+        }, withCancel: nil)
+        
+        removeDeniedRequest()
+        
+        attemptReload()
+    }
+    
+    func removeDeniedRequest() {
+        guard let uid = AppManager.getCurrentUID() else {
+            return
+        }
+        FIRDatabase.database().reference().child("denials").child(uid).observe(.childAdded, with: { (snapshot) in
             
-            self.attemptReload()
+            //print("removing \(snapshot.key)")
+            self.requestDictionary.removeValue(forKey: snapshot.key)
             
         }, withCancel: nil)
     }
     
     var timer: Timer?
+    var getTimer: Timer?
     
     private func attemptReload() {
         self.timer?.invalidate()
@@ -125,7 +166,7 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     
     func handleReload() {
         self.requests = Array<String>(self.requestDictionary.keys)
-        print(requests)
+        print("requests \(self.requests)")
     }
     
     func setupController() {
@@ -139,6 +180,7 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         view.addSubview(chargerPicker)
         view.addSubview(locationLabel)
         view.addSubview(chargerLabel)
+        view.addSubview(goToMessage)
         
         setupGetHelpButton()
         setupTextMessage()
@@ -146,6 +188,7 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         setupPickerView()
         setupLocationLabel()
         setupChargerLabel()
+        setupGoToMessage()
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogout))
         
@@ -223,6 +266,13 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         chargerPicker.dataSource = self
     }
     
+    func setupGoToMessage() {
+        goToMessage.bottomAnchor.constraint(equalTo: chargerLabel.bottomAnchor, constant: -20).isActive = true
+        goToMessage.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        goToMessage.widthAnchor.constraint(equalToConstant: 150).isActive = true
+        goToMessage.heightAnchor.constraint(equalToConstant: 50).isActive = true
+    }
+    
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
@@ -259,6 +309,7 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     }
     
     func showChatControllerForUser(user: User) {
+        UserDefaults.standard.setIsHandlingRequest(value: true)
         let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
         chatLogController.user = user
         navigationController?.pushViewController(chatLogController, animated: true)
@@ -268,21 +319,52 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         myTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(handleGet), userInfo: nil, repeats: true)
     }
     
-    func setupNavBarWithUser(user: User) {
-        //do other stuff to set up messagesController
-        
-        AppManager.currentUser = user
-        
+    func loadRequests() {
         fetchRequestsFromFirebase()
+        removeDeniedRequest()
+    }
+    
+    func resetMessageController() {
+        UserDefaults.standard.setIsRequesting(value: false)
+        UserDefaults.standard.setIsHandlingRequest(value: false)
         
-        print(UserDefaults.standard.isRequesting())
-        if !UserDefaults.standard.isRequesting() {
-            checkIfUserIsRequesting()
+        requests.removeAll()
+        requestDictionary.removeAll()
+        
+        loadRequests()
+        
+        print(requests)
+        
+        checkIfUserIsRequesting()
+        
+        //if(!UserDefaults.standard.isRequesting()) {
+        checkIfUserIsHandlingRequest()
+        //}
+        
+        
+    }
+    
+    private func attemptTimerReset() {
+        self.getTimer?.invalidate()
+        self.getTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(self.handleReset), userInfo: nil, repeats: false)
+    }
+    
+    func handleReset() {
+        print("handling \(UserDefaults.standard.isHandlingRequest())")
+
+        if !UserDefaults.standard.isHandlingRequest() {
+            resetTimer()
         }
+    }
+    
+    func setupNavBarWithUser(user: User) {
         
-        resetTimer()
+        //do other stuff to set up messagesController
+        AppManager.currentUser = user
+
+        resetMessageController()
         
-        
+        attemptTimerReset()
         
         //print(AppManager.currentUser?.name!)
         
