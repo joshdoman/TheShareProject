@@ -23,7 +23,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.makeKeyAndVisible()
         
         window?.rootViewController = UINavigationController(rootViewController: MessagesController())
-        
+        //window?.rootViewController = HomePageVC(transitionStyle: .scroll, navigationOrientation: .horizontal)
+
         return true
     }
     
