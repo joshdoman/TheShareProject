@@ -35,6 +35,7 @@ class AcceptController: UIViewController {
     
     
     var messageController: MessagesController?
+    var prevAcceptController: AcceptController?
 
     var requestId: String?
     
@@ -80,7 +81,7 @@ class AcceptController: UIViewController {
             acceptController.messageController = messageController
             acceptController.requestId = nextRequestId
             
-            print("present")
+            acceptController.prevAcceptController = self
             present(acceptController, animated: true, completion: nil)
         }
     }
@@ -100,7 +101,26 @@ class AcceptController: UIViewController {
     }
     
     func handleAccept() {
-        
+        FIRDatabase.database().reference().child("acceptances").observeSingleEvent(of: .value, with: { (snapshot) in
+            
+            if snapshot.hasChild(self.requestId!) {
+                let alertController = UIAlertController(title: "Sorry someone is already rescuing this person", message: nil, preferredStyle: UIAlertControllerStyle.alert)
+                alertController.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: { action -> Void in
+                    self.handleOkay()
+                }))
+                self.present(alertController, animated: true, completion: nil)
+            } else {
+                self.connectUsersAndShowMessages()
+            }
+            
+        }, withCancel: nil)
+    }
+    
+    func handleOkay() {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func connectUsersAndShowMessages() {
         guard let uid = AppManager.getCurrentUID() else {
             return
         }
@@ -125,16 +145,20 @@ class AcceptController: UIViewController {
             user.uid = self.requestId!
             user.setValuesForKeys(dictionary)
             self.segueToMessage(user: user)
-            
         }, withCancel: nil)
     }
     
     func segueToMessage(user: User) {
-        dismiss(animated: true, completion: {
-            self.messageController?.showChatControllerForUser(user: user)
-        })
+        if prevAcceptController != nil {
+            dismiss(animated: true, completion: {
+                self.prevAcceptController?.segueToMessage(user: user)
+            })
+        } else {
+            dismiss(animated: true, completion: {
+                self.messageController?.showChatControllerForUser(user: user)
+            })
+        }
     }
-    
     
     func handleDeny() {
         
@@ -142,9 +166,8 @@ class AcceptController: UIViewController {
             return
         }
         
-        let acceptRef = FIRDatabase.database().reference().child("denials").child(uid)
-        
-        acceptRef.updateChildValues([requestId!: 1])
+        FIRDatabase.database().reference().child("denials").child(uid).updateChildValues([requestId!: 1])
+        FIRDatabase.database().reference().child("denials-sorted-by-request").child(requestId!).updateChildValues([uid: 1])
         
         dismiss(animated: true, completion: nil)
     }

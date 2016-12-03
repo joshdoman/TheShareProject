@@ -1,8 +1,8 @@
 //
-//  RequestPendingViewController.swift
+//  RequestPendingViewController2.swift
 //  TheShareProject
 //
-//  Created by Alessandro Portela on 11/18/16.
+//  Created by Josh Doman on 12/2/16.
 //  Copyright © 2016 Josh Doman. All rights reserved.
 //
 
@@ -10,15 +10,25 @@ import UIKit
 import Firebase
 
 class RequestPendingViewController: UIViewController {
-
-    @IBOutlet weak var pendingLabel: UILabel!
+    
+    let pendingLabel: UILabel = {
+        let label = UILabel()
+        label.text = "You're request is pending"
+        label.numberOfLines = 2
+        label.font = UIFont.systemFont(ofSize: 30)
+        label.textColor = UIColor(r: 110, g: 151, b: 261)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .center
+        return label
+    }()
     
     var myTimer: Timer!
     var messagesController: MessagesController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        view.backgroundColor = .white
+        
         setupController()
         
         setupLabels()
@@ -69,7 +79,12 @@ class RequestPendingViewController: UIViewController {
     
     func setupLabels() {
         //TODO-- maybe don't need
+        view.addSubview(pendingLabel)
         
+        pendingLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        pendingLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        pendingLabel.widthAnchor.constraint(equalToConstant: 300).isActive = true
+        pendingLabel.heightAnchor.constraint(equalToConstant: 200).isActive = true
     }
     
     func setupController() {
@@ -80,3 +95,4 @@ class RequestPendingViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
 }
+

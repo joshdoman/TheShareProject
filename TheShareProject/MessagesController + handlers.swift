@@ -84,8 +84,10 @@ extension MessagesController {
             
             if snapshot.hasChild(uid) {
                 print("someone has accepted")
+                self.showMessageButton(isHidden: false)
                 self.openChatControllerWithPartner(uid: uid)
             } else {
+                self.showMessageButton(isHidden: true)
                 self.checkIfUserIsRequestingOrIfSomeoneElseIsRequesting(uid: uid)
             }
             
@@ -141,6 +143,20 @@ extension MessagesController {
         
     }
     
+    func fetchDenialsFromFirebase() {
+        guard let uid = AppManager.getCurrentUID() else {
+            return
+        }
+        
+        let denialsRef = FIRDatabase.database().reference().child("denials-sorted-by-request").child(uid)
+        
+        denialsRef.observe(.childAdded, with: { (snapshot) in
+            
+            FIRDatabase.database().reference().child("denials").child(snapshot.key).child(uid).removeValue()
+            denialsRef.child(snapshot.key).removeValue()
+            
+        }, withCancel: nil)
+    }
     
     func removeDeniedRequest() {
         guard let uid = AppManager.getCurrentUID() else {
@@ -191,6 +207,50 @@ extension MessagesController {
     func handleLoadRequests() {
         self.requests = Array<String>(self.requestDictionary.keys)
         removeDeniedRequest()
+    }
+    
+    func handleEndRequest() {
+        print(123)
+        let alertController = UIAlertController(title: "Are you sure?", message: nil, preferredStyle: UIAlertControllerStyle.alert)
+        alertController.addAction(UIAlertAction(title: "Yes I have been saved", style: UIAlertActionStyle.default, handler: { action -> Void in
+            self.handleYes()
+        }))
+        alertController.addAction(UIAlertAction(title: "Oops", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    
+    func handleYes() {
+        guard let uid = AppManager.getCurrentUID() else {
+            return
+        }
+        
+        guard let otherUid = self.chatLogController?.user?.uid else {
+            return
+        }
+        
+        FIRDatabase.database().reference().child("requests").observeSingleEvent(of: .value, with: { (snapshot) in
+            
+            if !snapshot.hasChild(uid) {
+                
+                FIRDatabase.database().reference().child("denials-sorted-by-request").child(otherUid).updateChildValues([uid: 1])
+                FIRDatabase.database().reference().child("denials").child(uid).updateChildValues([otherUid: 1])
+                
+            } else {
+                self.fetchDenialsFromFirebase()
+                
+                FIRDatabase.database().reference().child("requests").child(uid).removeValue()
+            }
+            
+            FIRDatabase.database().reference().child("acceptances").child(uid).removeValue()
+            FIRDatabase.database().reference().child("acceptances").child(otherUid).removeValue()
+
+        }, withCancel: nil)
+        
+        NetworkManager.sendConfirmation(user: (chatLogController?.user)!)
+        
+        resetMessageController()
+        showMessageButton(isHidden: false)
     }
     
 }

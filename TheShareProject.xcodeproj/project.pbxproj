@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		06AD35211DDF4C5C00C7FF64 /* ConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AD351F1DDF4C5C00C7FF64 /* ConfirmationViewController.swift */; };
 		06AD35221DDF4C5C00C7FF64 /* ConfirmationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 06AD35201DDF4C5C00C7FF64 /* ConfirmationViewController.xib */; };
-		06D8D19E1DDF45A200180EA1 /* RequestPendingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D8D19C1DDF45A200180EA1 /* RequestPendingViewController.swift */; };
-		06D8D19F1DDF45A200180EA1 /* RequestPendingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 06D8D19D1DDF45A200180EA1 /* RequestPendingViewController.xib */; };
 		0878FE7F3CF65A4B7FAEC931 /* Pods_TheShareProjectTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D8DA87B60F515277DEF138E /* Pods_TheShareProjectTests.framework */; };
 		0DE8B2F56484C32B01E268BC /* Pods_TheShareProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FB9BC882A917156B82D1DB8 /* Pods_TheShareProject.framework */; };
 		2114341C1DDC1A7C001A2495 /* MessagesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2114341B1DDC1A7C001A2495 /* MessagesController.swift */; };
@@ -38,6 +36,7 @@
 		21DF6AE01DE8FD40007A1F28 /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DF6ADE1DE8FD40007A1F28 /* ChatMessageCell.swift */; };
 		21DF6AE11DE8FD40007A1F28 /* ChatInputContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DF6ADF1DE8FD40007A1F28 /* ChatInputContainerView.swift */; };
 		21DF6AE91DE929DF007A1F28 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 21DF6AE81DE929DF007A1F28 /* GoogleService-Info.plist */; };
+		21EE002D1DF2441E0007A8FF /* RequestPendingViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EE002C1DF2441E0007A8FF /* RequestPendingViewController2.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,8 +52,6 @@
 /* Begin PBXFileReference section */
 		06AD351F1DDF4C5C00C7FF64 /* ConfirmationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfirmationViewController.swift; sourceTree = "<group>"; };
 		06AD35201DDF4C5C00C7FF64 /* ConfirmationViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ConfirmationViewController.xib; sourceTree = "<group>"; };
-		06D8D19C1DDF45A200180EA1 /* RequestPendingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestPendingViewController.swift; sourceTree = "<group>"; };
-		06D8D19D1DDF45A200180EA1 /* RequestPendingViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RequestPendingViewController.xib; sourceTree = "<group>"; };
 		0CAFE38752CEC88A925719E0 /* Pods-TheShareProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheShareProject.release.xcconfig"; path = "Pods/Target Support Files/Pods-TheShareProject/Pods-TheShareProject.release.xcconfig"; sourceTree = "<group>"; };
 		2114341B1DDC1A7C001A2495 /* MessagesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesController.swift; sourceTree = "<group>"; };
 		2114341D1DDC1F63001A2495 /* LoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
@@ -86,6 +83,7 @@
 		21DF6ADE1DE8FD40007A1F28 /* ChatMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatMessageCell.swift; path = ../../Project/gameofchats/gameofchats/ChatMessageCell.swift; sourceTree = "<group>"; };
 		21DF6ADF1DE8FD40007A1F28 /* ChatInputContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatInputContainerView.swift; path = ../../Project/gameofchats/gameofchats/ChatInputContainerView.swift; sourceTree = "<group>"; };
 		21DF6AE81DE929DF007A1F28 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		21EE002C1DF2441E0007A8FF /* RequestPendingViewController2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestPendingViewController2.swift; sourceTree = "<group>"; };
 		2FB9BC882A917156B82D1DB8 /* Pods_TheShareProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TheShareProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F9CBE1867C2494FFA8701FF /* Pods-TheShareProjectTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheShareProjectTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TheShareProjectTests/Pods-TheShareProjectTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7D8DA87B60F515277DEF138E /* Pods_TheShareProjectTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TheShareProjectTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -121,7 +119,7 @@
 				211434241DDE2FA9001A2495 /* ProfileViewController.swift */,
 				21D9691D1DF0AD0D002C0122 /* AcceptController.swift */,
 				2114342C1DDF487D001A2495 /* CongratsController.swift */,
-				06D8D19C1DDF45A200180EA1 /* RequestPendingViewController.swift */,
+				21EE002C1DF2441E0007A8FF /* RequestPendingViewController2.swift */,
 				06AD351F1DDF4C5C00C7FF64 /* ConfirmationViewController.swift */,
 				21DF6ADA1DE8FCE8007A1F28 /* ChatLogController.swift */,
 			);
@@ -205,7 +203,6 @@
 				21DF6ADF1DE8FD40007A1F28 /* ChatInputContainerView.swift */,
 				211434251DDE2FA9001A2495 /* ProfileViewController.xib */,
 				2114342D1DDF487D001A2495 /* CongratsController.xib */,
-				06D8D19D1DDF45A200180EA1 /* RequestPendingViewController.xib */,
 				06AD35201DDF4C5C00C7FF64 /* ConfirmationViewController.xib */,
 			);
 			name = Views;
@@ -332,7 +329,6 @@
 				2114342F1DDF487D001A2495 /* CongratsController.xib in Resources */,
 				2176B9C91DDAC63A0058394A /* Assets.xcassets in Resources */,
 				211434271DDE2FA9001A2495 /* ProfileViewController.xib in Resources */,
-				06D8D19F1DDF45A200180EA1 /* RequestPendingViewController.xib in Resources */,
 				2176B9C71DDAC63A0058394A /* Main.storyboard in Resources */,
 				06AD35221DDF4C5C00C7FF64 /* ConfirmationViewController.xib in Resources */,
 			);
@@ -446,13 +442,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				21DF6A351DE4C798007A1F28 /* LoginController + handlers.swift in Sources */,
+				21EE002D1DF2441E0007A8FF /* RequestPendingViewController2.swift in Sources */,
 				21DF6AD81DE89E96007A1F28 /* Request.swift in Sources */,
 				2114342E1DDF487D001A2495 /* CongratsController.swift in Sources */,
 				21DF6ADD1DE8FD1F007A1F28 /* Message.swift in Sources */,
 				21DF6A3B1DE64A6E007A1F28 /* MessagesController + handlers.swift in Sources */,
 				2114341C1DDC1A7C001A2495 /* MessagesController.swift in Sources */,
 				2176B9C21DDAC63A0058394A /* AppDelegate.swift in Sources */,
-				06D8D19E1DDF45A200180EA1 /* RequestPendingViewController.swift in Sources */,
 				06AD35211DDF4C5C00C7FF64 /* ConfirmationViewController.swift in Sources */,
 				211434231DDE10CA001A2495 /* Products.swift in Sources */,
 				211434261DDE2FA9001A2495 /* ProfileViewController.swift in Sources */,
@@ -524,6 +520,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -573,6 +570,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;

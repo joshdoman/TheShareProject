@@ -47,6 +47,41 @@ class NetworkManager {
         }
     }
     
+    static func sendConfirmation(user: User) {
+        
+        let url = URL(string: "http://localhost:3000/notify/user")
+        
+        let request = NSMutableURLRequest(url: url!)
+        
+        request.httpMethod = "POST"
+        do {
+            let params = ["name": AppManager.currentUser?.name, "number": user.number]
+            
+            request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            
+            request.httpBody = try JSONSerialization.data(withJSONObject: params, options: JSONSerialization.WritingOptions.prettyPrinted)
+            
+            let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) in
+                //
+                if let error = error {
+                    print(error.localizedDescription)
+                    
+                    
+                } else if let httpResponse = response as? HTTPURLResponse {
+                    if httpResponse.statusCode == 200 {
+                        
+                    }
+                }
+                
+            })
+            
+            task.resume()
+            
+        } catch {
+            
+        }
+    }
+    
     static func getOutstandingRequest() {
         let url = URL(string: "http://localhost:3000/getRequestInfo")
         

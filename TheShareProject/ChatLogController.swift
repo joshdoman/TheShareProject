@@ -7,78 +7,63 @@
 //
 
 import UIKit
-import Firebase
+//import Firebase
 
 class ChatLogController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    var pageVC: PageVC?
     
     var user: User? {
         didSet {
             navigationItem.title = user?.name
             
-            let image = UIImage(named: "Checked-50")
-            navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(handleEndSession))
-            
             observeMessages()
         }
     }
     
-    func handleEndSession() {
-        navigationController?.popToRootViewController(animated: true)
-        removeAllEvidenceOfRequest()
-    }
-    
-    func removeAllEvidenceOfRequest() {
-        guard let uid = AppManager.getCurrentUID() else {
-            return
-        }
-        
-        FIRDatabase.database().reference().child("acceptances").child(uid).removeValue()
-        FIRDatabase.database().reference().child("requests").child(uid).removeValue()
-    }
+    //var messageController: MessagesController?
     
     var messages = [Message]()
     
     func observeMessages() {
-        guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = user?.uid else {
-            return
-        }
-        
-        let userMessagesRef =
-            FIRDatabase.database().reference().child("user-messages").child(uid).child(toId)
-        userMessagesRef.observe(.childAdded, with: { (snapshot) in
-            
-            let messageId = snapshot.key
-            
-            let messagesRef = FIRDatabase.database().reference().child("messages").child(messageId)
-            messagesRef.observeSingleEvent(of: .value, with: { (snapshot) in
-                
-                guard let dictionary = snapshot.value as? [String: AnyObject] else {
-                    return
-                }
-                
-                let message = Message(dictionary: dictionary)
-                
-                self.messages.append(message)
-                
-                DispatchQueue.main.async(execute: {
-                    self.collectionView?.reloadData()
-                    //scroll to the last index
-                    let indexPath = IndexPath(item: self.messages.count - 1, section: 0)
-                    self.collectionView?.scrollToItem(at: indexPath, at: .bottom, animated: true)
-                })
-                
-            }, withCancel: nil)
-        }, withCancel: nil)
+//        guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = user?.uid else {
+//            return
+//        }
+//        
+//        let userMessagesRef =
+//            FIRDatabase.database().reference().child("user-messages").child(uid).child(toId)
+//        userMessagesRef.observe(.childAdded, with: { (snapshot) in
+//            
+//            let messageId = snapshot.key
+//            
+//            let messagesRef = FIRDatabase.database().reference().child("messages").child(messageId)
+//            messagesRef.observeSingleEvent(of: .value, with: { (snapshot) in
+//                
+//                guard let dictionary = snapshot.value as? [String: AnyObject] else {
+//                    return
+//                }
+//                
+//                let message = Message(dictionary: dictionary)
+//                
+//                self.messages.append(message)
+//                
+//                DispatchQueue.main.async(execute: {
+//                    self.collectionView?.reloadData()
+//                    //scroll to the last index
+//                    let indexPath = IndexPath(item: self.messages.count - 1, section: 0)
+//                    self.collectionView?.scrollToItem(at: indexPath, at: .bottom, animated: true)
+//                })
+//                
+//            }, withCancel: nil)
+//        }, withCancel: nil)
     }
     
     let cellId = "cellId"
     
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        print(UserDefaults.standard.isHandlingRequest())
+        //messageController?.chatLogController = self
         
         collectionView?.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
         //        collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
@@ -91,7 +76,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         //        setupInputComponents()
         //
         setupKeyboardObservers()
-        
         
     }
     
@@ -133,25 +117,25 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     }
     
     private func uploadToFirebaseStorageUsingImage(image: UIImage) {
-        let imageName = NSUUID().uuidString
-        
-        
-        let ref = FIRStorage.storage().reference().child("message_images").child("\(imageName).jpg")
-        
-        if let uploadData = UIImageJPEGRepresentation(image, 0.2) {
-            ref.put(uploadData, metadata: nil, completion: { (metadata, error) in
-                
-                if error != nil {
-                    print("Failed to upload image:", error!)
-                    return
-                }
-                
-                if let imageUrl = metadata?.downloadURL()?.absoluteString {
-                    self.sendMessageWithImageUrl(imageUrl: imageUrl, image: image)
-                }
-                
-            })
-        }
+//        let imageName = NSUUID().uuidString
+//        
+//        
+//        let ref = FIRStorage.storage().reference().child("message_images").child("\(imageName).jpg")
+//        
+//        if let uploadData = UIImageJPEGRepresentation(image, 0.2) {
+//            ref.put(uploadData, metadata: nil, completion: { (metadata, error) in
+//                
+//                if error != nil {
+//                    print("Failed to upload image:", error!)
+//                    return
+//                }
+//                
+//                if let imageUrl = metadata?.downloadURL()?.absoluteString {
+//                    self.sendMessageWithImageUrl(imageUrl: imageUrl, image: image)
+//                }
+//                
+//            })
+//        }
         
     }
     
@@ -179,6 +163,12 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
             let indexPath = IndexPath(item: self.messages.count - 1, section: 0)
             self.collectionView?.scrollToItem(at: indexPath, at: .bottom, animated: true)
         }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        //messageController?.showMessageButton(isHidden: false)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -256,33 +246,33 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     }
     
     private func setupCell(cell: ChatMessageCell, message: Message) {
-        if let profileImageUrl = self.user?.profileImageUrl {
-            cell.profileImageView.loadImageUsingCacheWithUrlString(urlString: profileImageUrl)
-        }
-        
-        if message.fromId == FIRAuth.auth()?.currentUser?.uid {
-            //outgoing blue
-            cell.bubbleView.backgroundColor = ChatMessageCell.blueColor
-            cell.textView.textColor = UIColor.white
-            cell.bubbleViewRightAnchor?.isActive = true
-            cell.bubbleViewLeftAnchor?.isActive = false
-            cell.profileImageView.isHidden = true
-        } else {
-            cell.bubbleView.backgroundColor = UIColor(r: 240, g: 240, b: 240)
-            cell.textView.textColor = UIColor.black
-            cell.bubbleViewRightAnchor?.isActive = false
-            cell.bubbleViewLeftAnchor?.isActive = true
-            cell.profileImageView.isHidden = false
-            //incoming gray
-        }
-        
-        if let messageImageUrl = message.imageUrl {
-            cell.bubbleView.backgroundColor = UIColor.clear
-            cell.messageImageView.loadImageUsingCacheWithUrlString(urlString: messageImageUrl)
-            cell.messageImageView.isHidden = false
-        } else {
-            cell.messageImageView.isHidden = true
-        }
+//        if let profileImageUrl = self.user?.profileImageUrl {
+//            cell.profileImageView.loadImageUsingCacheWithUrlString(urlString: profileImageUrl)
+//        }
+//        
+//        if message.fromId == FIRAuth.auth()?.currentUser?.uid {
+//            //outgoing blue
+//            cell.bubbleView.backgroundColor = ChatMessageCell.blueColor
+//            cell.textView.textColor = UIColor.white
+//            cell.bubbleViewRightAnchor?.isActive = true
+//            cell.bubbleViewLeftAnchor?.isActive = false
+//            cell.profileImageView.isHidden = true
+//        } else {
+//            cell.bubbleView.backgroundColor = UIColor(r: 240, g: 240, b: 240)
+//            cell.textView.textColor = UIColor.black
+//            cell.bubbleViewRightAnchor?.isActive = false
+//            cell.bubbleViewLeftAnchor?.isActive = true
+//            cell.profileImageView.isHidden = false
+//            //incoming gray
+//        }
+//        
+//        if let messageImageUrl = message.imageUrl {
+//            cell.bubbleView.backgroundColor = UIColor.clear
+//            cell.messageImageView.loadImageUsingCacheWithUrlString(urlString: messageImageUrl)
+//            cell.messageImageView.isHidden = false
+//        } else {
+//            cell.messageImageView.isHidden = true
+//        }
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -290,54 +280,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     }
     
     var containerViewBottomAnchor: NSLayoutConstraint?
-    
-    
-    //sets up input components (but not in inputContainerView)
-    //    func setupInputComponents() {
-    //        let containerView = UIView()
-    //        containerView.backgroundColor = UIColor.white
-    //
-    //        containerView.translatesAutoresizingMaskIntoConstraints = false
-    //
-    //        view.addSubview(containerView)
-    //
-    //        containerView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-    //
-    //        containerViewBottomAnchor = containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-    //        containerViewBottomAnchor?.isActive = true
-    //
-    //        containerView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-    //        containerView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-    //
-    //        let sendButton = UIButton(type: .system)
-    //        sendButton.setTitle("Send", for: .normal)
-    //        sendButton.translatesAutoresizingMaskIntoConstraints = false
-    //        sendButton.addTarget(self, action: #selector(handleSend), for: .touchUpInside)
-    //        containerView.addSubview(sendButton)
-    //
-    //        sendButton.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
-    //        sendButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-    //        sendButton.widthAnchor.constraint(equalToConstant: 80).isActive = true
-    //        sendButton.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
-    //
-    //        containerView.addSubview(inputTextField)
-    //
-    //        inputTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 8).isActive = true
-    //        inputTextField.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-    //        inputTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor).isActive = true
-    //        inputTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
-    //
-    //        let separatorLineView = UIView()
-    //        separatorLineView.backgroundColor = UIColor(r: 220, g: 220, b: 220)
-    //        separatorLineView.translatesAutoresizingMaskIntoConstraints = false
-    //        containerView.addSubview(separatorLineView)
-    //
-    //        separatorLineView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
-    //        separatorLineView.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
-    //        separatorLineView.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
-    //        separatorLineView.heightAnchor.constraint(equalToConstant: 1).isActive = true
-    //
-    //    }
     
     func handleSend() {
         let properties: [String: AnyObject] = ["text": inputContainerView.inputTextField.text! as AnyObject]
@@ -352,37 +294,37 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     }
     
     private func sendMessageWithProperties(properties: [String: AnyObject]) {
-        let ref = FIRDatabase.database().reference().child("messages")
-        let childRef = ref.childByAutoId()
-        let toId = user!.uid!
-        let fromId = FIRAuth.auth()?.currentUser!.uid
-        
-        
-        
-        let timestamp = NSNumber(value: Int(NSDate().timeIntervalSince1970))
-        var values: [String: AnyObject] = ["toId": toId as AnyObject, "fromId": fromId! as AnyObject, "timestamp": timestamp as AnyObject]
-        
-        //append properties dictionary onto values
-        //key $0, value $1
-        properties.forEach({values[$0] = $1})
-        
-        childRef.updateChildValues(values) { (error, ref) in
-            if error != nil {
-                print(error!)
-                return
-            }
-            
-            self.inputContainerView.inputTextField.text = nil
-            
-            let userMessagesRef = FIRDatabase.database().reference().child("user-messages").child(fromId!).child(toId)
-            
-            let messageId = childRef.key
-            userMessagesRef.updateChildValues([messageId: 1])
-            
-            let recipientUserMessagesRef = FIRDatabase.database().reference().child("user-messages").child(toId).child(fromId!)
-            recipientUserMessagesRef.updateChildValues([messageId: 1])
-            
-        }
+//        let ref = FIRDatabase.database().reference().child("messages")
+//        let childRef = ref.childByAutoId()
+//        let toId = user!.uid!
+//        let fromId = FIRAuth.auth()?.currentUser!.uid
+//        
+//        
+//        
+//        let timestamp = NSNumber(value: Int(NSDate().timeIntervalSince1970))
+//        var values: [String: AnyObject] = ["toId": toId as AnyObject, "fromId": fromId! as AnyObject, "timestamp": timestamp as AnyObject]
+//        
+//        //append properties dictionary onto values
+//        //key $0, value $1
+//        properties.forEach({values[$0] = $1})
+//        
+//        childRef.updateChildValues(values) { (error, ref) in
+//            if error != nil {
+//                print(error!)
+//                return
+//            }
+//            
+//            self.inputContainerView.inputTextField.text = nil
+//            
+//            let userMessagesRef = FIRDatabase.database().reference().child("user-messages").child(fromId!).child(toId)
+//            
+//            let messageId = childRef.key
+//            userMessagesRef.updateChildValues([messageId: 1])
+//            
+//            let recipientUserMessagesRef = FIRDatabase.database().reference().child("user-messages").child(toId).child(fromId!)
+//            recipientUserMessagesRef.updateChildValues([messageId: 1])
+//            
+//        }
     }
 }
 

@@ -20,6 +20,9 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     
     var needCharger: String!
     var myTimer: Timer!
+    var timer2: Timer!
+    
+    var chatLogController: ChatLogController?
     
     lazy var getHelpButton: UIButton = {
         let button = UIButton(type: .system)
@@ -34,39 +37,40 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         return button
     }()
     
-    let blackView = UIView()
-    
-    func showMessageButton() {
-        view.addSubview(blackView)
-        
-        blackView.backgroundColor = UIColor(white: 0, alpha: 0.5)
-        
-        blackView.frame = view.frame
-        blackView.alpha = 0
-        
-        //animation
-//        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-//            self.blackView.alpha = 1
-//        }, completion: nil)
-    }
+    let blackView: UIView = {
+        let v = UIView()
+        //v.backgroundColor = UIColor(white: 0, alpha: 0.5)
+        v.backgroundColor = UIColor(r: 160, g: 191, b: 255)
+        return v
+    }()
     
     lazy var goToMessage: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Go to message", for: .normal)
+        button.setTitleColor(UIColor(r: 210, g: 251, b: 261), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
         
         button.addTarget(self, action: #selector(handleShowMessage), for: .touchUpInside)//TODO-- change selector back to handleGetHelp
         
         return button
     }()
     
+    lazy var endRequest: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("End Request", for: .normal)
+        button.setTitleColor(UIColor(r: 210, g: 251, b: 261), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
+        
+        button.addTarget(self, action: #selector(handleEndRequest), for: .touchUpInside)//TODO-- change selector back to handleGetHelp
+        
+        return button
+    }()
+    
     let textMessage: UITextField = {
         let text = UITextField()
-        
-        //let rect = CGRect(x: 0, y: 0, width: 50, height: 50)
-        
-        //text.borderRect(forBounds: rect)
+
         text.translatesAutoresizingMaskIntoConstraints = false
         text.placeholder = "Help! I'm in GSR G60!"
         let myColor : UIColor = UIColor.gray
@@ -134,7 +138,9 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         view.addSubview(chargerPicker)
         view.addSubview(locationLabel)
         view.addSubview(chargerLabel)
+        view.addSubview(blackView)
         view.addSubview(goToMessage)
+        view.addSubview(endRequest)
         
         setupGetHelpButton()
         setupTextMessage()
@@ -142,7 +148,9 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         setupPickerView()
         setupLocationLabel()
         setupChargerLabel()
+        setupBlackView()
         setupGoToMessage()
+        setupEndRequest()
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogout))
         
@@ -175,6 +183,12 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
             fetchUserAndSetupNavBarTitle()
 
         }
+    }
+    
+    func showMessageButton(isHidden: Bool) {
+        goToMessage.isHidden = isHidden
+        blackView.isHidden = isHidden
+        endRequest.isHidden = isHidden
     }
     
     func setupGetHelpButton() {
@@ -223,8 +237,22 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     func setupGoToMessage() {
         goToMessage.bottomAnchor.constraint(equalTo: chargerLabel.bottomAnchor, constant: -20).isActive = true
         goToMessage.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        goToMessage.widthAnchor.constraint(equalToConstant: 150).isActive = true
+        goToMessage.widthAnchor.constraint(equalToConstant: 300).isActive = true
         goToMessage.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        goToMessage.isHidden = true
+    }
+    
+    func setupBlackView() {
+        blackView.frame = view.frame
+        blackView.isHidden = true
+    }
+    
+    func setupEndRequest() {
+        endRequest.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 100).isActive = true
+        endRequest.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        endRequest.widthAnchor.constraint(equalToConstant: 300).isActive = true
+        endRequest.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        endRequest.isHidden = true
     }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -263,16 +291,26 @@ class MessagesController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     }
     
     func showChatControllerForUser(user: User) {
-        UserDefaults.standard.setIsHandlingRequest(value: true)
-        let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
-        chatLogController.user = user
-        navigationController?.pushViewController(chatLogController, animated: true)
+        if let chat = chatLogController {
+            print("yes")
+            navigationController?.pushViewController(chat, animated: true)
+        } else {
+            let chat = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
+            chat.user = user
+            chat.messageController = self
+            self.chatLogController = chat
+            navigationController?.pushViewController(chat, animated: true)
+        }
     }
     
     func resetMessageController() {
 
         requests.removeAll()
         requestDictionary.removeAll()
+        
+        textMessage.text?.removeAll()
+        
+        chatLogController = nil
         
         checkIfHandlingRequestThenCheckIfRequesting()
         
